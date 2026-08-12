@@ -1,0 +1,12 @@
+# IDE
+.idea/
+*.iml
+
+# Android / Gradle (for when the app module is added)
+*.apk
+*.aab
+local.properties
+.gradle/
+build/
+captures/
+.cxx/
