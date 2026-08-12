@@ -38,12 +38,12 @@ Per plan.md Project Structure — 3 Gradle modules:
 
 **Purpose**: Project initialization and module scaffolding
 
-- [ ] T001 Create root Gradle project with `app`, `cv`, `match` modules per plan.md Project Structure (`settings.gradle.kts`, root `build.gradle.kts`, Kotlin 1.9+/JVM 17, minSdk 26)
-- [ ] T002 [P] Add OpenCV Android dependency and native-lib packaging config to `cv/build.gradle.kts`
-- [ ] T003 [P] Add CameraX dependencies (core, camera2, lifecycle, view) to `app/build.gradle.kts`
-- [ ] T004 [P] Add Jetpack Compose dependencies + compiler config to `app/build.gradle.kts`
-- [ ] T005 [P] Add Room dependencies (runtime, ktx, compiler/KSP) to `match/build.gradle.kts`
-- [ ] T006 [P] Configure ktlint/detekt across all 3 modules in root `build.gradle.kts`
+- [X] T001 Create root Gradle project with `app`, `cv`, `match` modules per plan.md Project Structure (`settings.gradle.kts`, root `build.gradle.kts`, Kotlin 1.9+/JVM 17, minSdk 26)
+- [X] T002 [P] Add OpenCV Android dependency and native-lib packaging config to `cv/build.gradle.kts`
+- [X] T003 [P] Add CameraX dependencies (core, camera2, lifecycle, view) to `app/build.gradle.kts`
+- [X] T004 [P] Add Jetpack Compose dependencies + compiler config to `app/build.gradle.kts`
+- [X] T005 [P] Add Room dependencies (runtime, ktx, compiler/KSP) to `match/build.gradle.kts`
+- [X] T006 [P] Configure ktlint/detekt across all 3 modules in root `build.gradle.kts`
 
 ---
 
@@ -53,12 +53,12 @@ Per plan.md Project Structure — 3 Gradle modules:
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Define `CvEngine` interface, `FrameInput`, `BoardCalibration`, `BoardCalibrationResult`, `DetectedThrow` types in `cv/src/main/java/com/bullseyestracker/cv/CvEngine.kt` per `contracts/cv-engine-contract.md`
-- [ ] T008 [P] Define domain model classes `Match`, `Player`, `Turn`, `Throw`, `DetectionFrame` in `match/src/main/java/com/bullseyestracker/match/model/` per data-model.md
-- [ ] T009 Define Room entities + DAOs (`MatchEntity`, `PlayerEntity`, `TurnEntity`, `ThrowEntity`, `MatchDao`) in `match/src/main/java/com/bullseyestracker/match/data/` (depends on T008)
-- [ ] T010 Implement `MatchRepository` (CRUD + Kotlin `Flow` observers for in-progress match) in `match/src/main/java/com/bullseyestracker/match/data/MatchRepository.kt` (depends on T009)
-- [ ] T011 [P] Implement `CameraController` scaffolding (CameraX `ProcessCameraProvider` bind/unbind, `PreviewView` wiring) in `app/src/main/java/com/bullseyestracker/camera/CameraController.kt`
-- [ ] T012 [P] Set up manual DI wiring (module-level singletons/factories connecting `cv`, `match`, `app`) in `app/src/main/java/com/bullseyestracker/di/AppContainer.kt`
+- [X] T007 Define `CvEngine` interface, `FrameInput`, `BoardCalibration`, `BoardCalibrationResult`, `DetectedThrow` types in `cv/src/main/java/com/bullseyestracker/cv/CvEngine.kt` per `contracts/cv-engine-contract.md` (also added `BoardDetector.kt`/`DartDetector.kt` interfaces + `ScoreCalculator.kt` — see Phase 3 note)
+- [X] T008 [P] Define domain model classes `Match`, `Player`, `Turn`, `Throw`, `DetectionFrame` in `match/src/main/java/com/bullseyestracker/match/model/` per data-model.md
+- [X] T009 Define Room entities + DAOs (`MatchEntity`, `PlayerEntity`, `TurnEntity`, `ThrowEntity`, `MatchDao`) in `match/src/main/java/com/bullseyestracker/match/data/` (depends on T008)
+- [X] T010 Implement `MatchRepository` (CRUD + Kotlin `Flow` observers for in-progress match) in `match/src/main/java/com/bullseyestracker/match/data/MatchRepository.kt` (depends on T009)
+- [X] T011 [P] Implement `CameraController` scaffolding (CameraX `ProcessCameraProvider` bind/unbind, `PreviewView` wiring) in `app/src/main/java/com/bullseyestracker/camera/CameraController.kt`
+- [X] T012 [P] Set up manual DI wiring (module-level singletons/factories connecting `cv`, `match`, `app`) in `app/src/main/java/com/bullseyestracker/di/AppContainer.kt`
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
@@ -76,22 +76,29 @@ detection + score overlay works standalone, no match/player features required.
 
 > Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T013 [P] [US1] Unit test `ScoreMapper` position→sector/ring/value mapping (including bull, miss, ring boundaries) against fixture coordinates in `cv/src/test/java/com/bullseyestracker/cv/ScoreMapperTest.kt`
-- [ ] T014 [P] [US1] Unit test `BoardDetector.calibrateBoard()` against fixture images: board found (returns calibration+confidence) and board not found (`NotFound`) in `cv/src/test/java/com/bullseyestracker/cv/BoardDetectorTest.kt`
-- [ ] T015 [P] [US1] Unit test `DartDetector` against fixture images with 0/1/3 known darts in `cv/src/test/java/com/bullseyestracker/cv/DartDetectorTest.kt`
-- [ ] T016 [P] [US1] Contract test asserting `CvEngine.detectThrows()` always populates `confidence` and `boardPosition`, returns empty list (not error) when no darts found, per `contracts/cv-engine-contract.md` in `cv/src/test/java/com/bullseyestracker/cv/CvEngineContractTest.kt`
+**Implementation note (discovered during /speckit-implement)**: `BoardDetector`/`DartDetector`
+were split into plain interfaces (in `cv/src/main/.../BoardDetector.kt`, `DartDetector.kt`)
+with OpenCV-backed implementations under `cv/src/main/.../opencv/`. OpenCV's native library
+only loads on a device/emulator, so tests that exercise the OpenCV implementations directly
+had to move to `androidTest` (T014/T015 below); `CvEngineImpl`'s own orchestration (T016)
+stays a plain-JVM test by depending only on the interfaces, using fakes.
+
+- [X] T013 [P] [US1] Unit test `ScoreMapper` position→sector/ring/value mapping (including bull, miss, ring boundaries) against fixture coordinates in `cv/src/test/java/com/bullseyestracker/cv/ScoreMapperTest.kt`
+- [X] T014 [P] [US1] Instrumented test `OpenCvBoardDetector.calibrate()` against fixture images: board found (returns calibration+confidence) and board not found (`NotFound`) in `cv/src/androidTest/java/com/bullseyestracker/cv/OpenCvBoardDetectorTest.kt` — **needs fixture images not yet supplied, see T044**
+- [X] T015 [P] [US1] Instrumented test `OpenCvDartDetector` against fixture images with 0/1/3 known darts in `cv/src/androidTest/java/com/bullseyestracker/cv/OpenCvDartDetectorTest.kt` — **needs fixture images not yet supplied, see T044**
+- [X] T016 [P] [US1] Contract test asserting `CvEngine.detectThrows()` always populates `confidence` and `boardPosition`, returns empty list (not error) when no darts found, per `contracts/cv-engine-contract.md` in `cv/src/test/java/com/bullseyestracker/cv/CvEngineContractTest.kt`
 
 ### Implementation for User Story 1
 
-- [ ] T017 [US1] Implement `BoardDetector` (Hough-circle board localization + calibration) in `cv/src/main/java/com/bullseyestracker/cv/BoardDetector.kt` (depends on T014)
-- [ ] T018 [US1] Implement `DartDetector` (contour/frame-diff detection against calibrated board) in `cv/src/main/java/com/bullseyestracker/cv/DartDetector.kt` (depends on T015)
-- [ ] T019 [US1] Implement `ScoreMapper` (position→sector/ring/value) in `cv/src/main/java/com/bullseyestracker/cv/ScoreMapper.kt` (depends on T013)
-- [ ] T020 [US1] Implement `CvEngineImpl` wiring `BoardDetector` + `DartDetector` + `ScoreMapper` behind the `CvEngine` interface in `cv/src/main/java/com/bullseyestracker/cv/CvEngineImpl.kt` (depends on T017, T018, T019, T016)
-- [ ] T021 [US1] Wire CameraX `ImageAnalysis` use case to invoke `CvEngine.detectThrows()` off the UI thread in `app/src/main/java/com/bullseyestracker/camera/LiveDetectionAnalyzer.kt` (depends on T020, T011)
-- [ ] T022 [US1] Build `DetectionOverlay` composable rendering dart positions/scores + low-confidence indicator (FR-012) over the camera preview in `app/src/main/java/com/bullseyestracker/ui/detection/DetectionOverlay.kt`
-- [ ] T023 [US1] Build `LiveScoringScreen` combining camera preview + `DetectionOverlay` + turn-confirm control in `app/src/main/java/com/bullseyestracker/ui/detection/LiveScoringScreen.kt` (depends on T021, T022)
-- [ ] T024 [US1] Implement manual correction UI (tap a detection → edit sector/ring/multiplier) in `app/src/main/java/com/bullseyestracker/ui/detection/CorrectionDialog.kt` (depends on T022)
-- [ ] T025 [US1] Instrumented benchmark test validating <200ms frame-to-result budget (constitution Principle IV) on the reference device class pinned in research.md (Pixel 6a / Galaxy A54-class or equivalent) in `cv/src/androidTest/java/com/bullseyestracker/cv/PerformanceBenchmarkTest.kt` (depends on T020; blocked on access to a matching device/emulator profile per research.md)
+- [X] T017 [US1] Implement `OpenCvBoardDetector` (Hough-circle board localization + calibration, implements `BoardDetector`) in `cv/src/main/java/com/bullseyestracker/cv/opencv/OpenCvBoardDetector.kt` (depends on T014)
+- [X] T018 [US1] Implement `OpenCvDartDetector` (frame-diff/contour detection against calibrated board, implements `DartDetector`) in `cv/src/main/java/com/bullseyestracker/cv/opencv/OpenCvDartDetector.kt` (depends on T015)
+- [X] T019 [US1] Implement `ScoreMapper` (position→sector/ring/value) in `cv/src/main/java/com/bullseyestracker/cv/ScoreMapper.kt` (depends on T013)
+- [X] T020 [US1] Implement `CvEngineImpl` wiring `BoardDetector` + `DartDetector` + `ScoreMapper` behind the `CvEngine` interface in `cv/src/main/java/com/bullseyestracker/cv/CvEngineImpl.kt` (depends on T017, T018, T019, T016)
+- [X] T021 [US1] Wire CameraX `ImageAnalysis` use case to invoke `CvEngine` off the UI thread (auto-calibrates, then detects) in `app/src/main/java/com/bullseyestracker/camera/LiveDetectionAnalyzer.kt` (depends on T020, T011)
+- [X] T022 [US1] Build `DetectionOverlay` composable rendering dart positions/scores + low-confidence indicator (FR-012) over the camera preview in `app/src/main/java/com/bullseyestracker/ui/detection/DetectionOverlay.kt`
+- [X] T023 [US1] Build `LiveScoringScreen` combining camera preview + `DetectionOverlay` + turn-confirm control in `app/src/main/java/com/bullseyestracker/ui/detection/LiveScoringScreen.kt` (depends on T021, T022)
+- [X] T024 [US1] Implement manual correction UI (tap a detection → edit sector/ring/multiplier) in `app/src/main/java/com/bullseyestracker/ui/detection/CorrectionDialog.kt` (depends on T022)
+- [X] T025 [US1] Instrumented benchmark test validating <200ms frame-to-result budget (constitution Principle IV) on the reference device class pinned in research.md (Pixel 6a / Galaxy A54-class or equivalent) in `cv/src/androidTest/java/com/bullseyestracker/cv/PerformanceBenchmarkTest.kt` (depends on T020; blocked on access to a matching device/emulator profile per research.md) — **needs fixture images not yet supplied, see T044**
 
 **Checkpoint**: User Story 1 fully functional and testable independently (MVP)
 
