@@ -74,15 +74,22 @@ throw detections, and match/score screens driven by Room `Flow`s.
 ## Performance budget validation approach
 
 **Decision**: The <200ms frame-to-result budget (constitution Principle IV) will be validated
-against real mid-tier device hardware during implementation (instrumented benchmark test in the
-`cv` module feeding fixture frames through the full detection pipeline), not assumed from
-design alone.
+against a pinned reference device class during implementation (instrumented benchmark test in
+the `cv` module feeding fixture frames through the full detection pipeline), not assumed from
+design alone. Reference device class: Snapdragon 7-series-equivalent (or newer) SoC, 6GB+ RAM,
+released within the last ~4 years (concrete examples: Google Pixel 6a, Samsung Galaxy A54) —
+i.e. a genuinely mid-tier device, not a flagship, since that's the target user's likely hardware.
 
 **Rationale**: Classical CV pipeline cost (Hough transform, contour detection) is highly
 dependent on input resolution and device CPU; a concrete target device tier and downscaling
-strategy need real measurement rather than a priori estimation. This is a Phase 2
-(tasks/implementation) concern, tracked here so it isn't lost.
+strategy need real measurement rather than a priori estimation. Leaving the device tier
+undefined would make the benchmark task (tasks.md T025) unrunnable, so this decision is now
+pinned here rather than deferred.
 
-**Open follow-up (non-blocking for planning)**: Pick a concrete minimum reference device (or
-device class) to benchmark against once implementation starts; not required to unblock Phase 1
-design.
+**Blocking note**: tasks.md T025 (instrumented performance benchmark) MUST use a device from
+this class (or an emulator profile matching it) — this is a prerequisite for T025, not an
+open/non-blocking follow-up.
+
+**Alternatives considered**: Benchmarking on a flagship device only — rejected, would validate
+a best-case that doesn't reflect the actual target hardware and could hide a budget miss on
+real user devices.
