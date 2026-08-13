@@ -30,7 +30,7 @@ tasks.withType<Test> {
 
 dependencies {
     // OpenCV publishes an official Android AAR to Maven Central since 4.9.0.
-    implementation("org.opencv:opencv:4.9.0")
+    implementation("org.opencv:opencv:5.0.0.1")
 
     testImplementation("junit:junit:4.13.2")
     // Used only to satisfy FrameInput's Bitmap field in plain-JVM tests that never call
