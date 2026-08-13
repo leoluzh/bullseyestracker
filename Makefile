@@ -12,6 +12,7 @@ GRADLE := $(shell test -x ./gradlew && echo ./gradlew || echo gradle)
 .PHONY: help
 help:
 	@echo "BullseyesTracker - available targets:"
+	@echo "  make install-deps     install JDK17/Android SDK/gradlew (scripts/install-deps.sh)"
 	@echo "  make doctor           check JDK/Gradle/adb/ANDROID_HOME are visible"
 	@echo "  make wrapper          generate ./gradlew (requires system 'gradle', e.g. via devbox)"
 	@echo "  make build            build all modules"
@@ -24,6 +25,10 @@ help:
 	@echo "  make install          install debug APK on a connected device"
 	@echo "  make run              install + launch the app on a connected device"
 	@echo "  make clean            clean all build outputs"
+
+.PHONY: install-deps
+install-deps:
+	./scripts/install-deps.sh
 
 .PHONY: doctor
 doctor:
