@@ -27,13 +27,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build, unit test, lint
         run: ./gradlew build --console=plain
-
-      # Instrumented tests (OpenCvBoardDetectorTest, OpenCvDartDetectorTest,
-      # PerformanceBenchmarkTest under cv/src/androidTest) need a running emulator and are not
-      # wired up here — they also depend on fixture images not yet added (tasks.md T044).
-      # Add a reactivecircus/android-emulator-runner job once both of those exist.
 
       - name: Upload test/lint reports
         if: always()
