@@ -9,6 +9,7 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Size
+import org.opencv.geometry.Geometry
 import org.opencv.imgproc.Imgproc
 
 /**
@@ -56,9 +57,9 @@ class OpenCvDartDetector : DartDetector {
 
         val detections =
             contours.mapNotNull { contour ->
-                val area = Imgproc.contourArea(contour)
+                val area = Geometry.contourArea(contour)
                 if (area < minArea || area > maxArea) return@mapNotNull null
-                val moments = Imgproc.moments(contour)
+                val moments = Geometry.moments(contour)
                 if (moments.m00 == 0.0) return@mapNotNull null
                 RawDartDetection(
                     positionX = (moments.m10 / moments.m00).toFloat() / width,
