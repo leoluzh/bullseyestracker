@@ -179,7 +179,7 @@ points state updates per standard rules, independent of 501 logic.
 - [ ] T040 Wire match-resume-on-launch (FR-011): app start observes `MatchRepository` for an in-progress match and restores it in `app/src/main/java/com/bullseyestracker/MainActivity.kt` (depends on T010)
 - [ ] T041 [P] Manual validation pass of quickstart.md Scenario 6 (airplane mode, FR-013)
 - [ ] T042 Run full quickstart.md validation (all 7 scenarios) end-to-end on a physical device
-- [ ] T043 [P] Write `README.md` with build/run instructions for the 3-module project
+- [X] T043 [P] Write `README.md` with build/run instructions for the 3-module project
 - [ ] T044 Build curated fixture image set (varied dart counts/positions/lighting, ground-truth sector/ring labels) and an accuracy benchmark test asserting ≥90% correct sector+ring detection (spec SC-002) in `cv/src/test/java/com/bullseyestracker/cv/DetectionAccuracyBenchmarkTest.kt` (depends on T020)
 
 ---
