@@ -1,0 +1,13 @@
+{
+  "packages": [
+    "jdk@17",
+    "gradle@latest",
+    "android-tools@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'BullseyesTracker devbox shell: JDK 17 + Gradle + adb (android-tools) ready.'",
+      "echo 'NOT provided here: full Android SDK (compileSdk 34 platform + build-tools) - set ANDROID_HOME/ANDROID_SDK_ROOT to an Android Studio / cmdline-tools install. See project chat notes / README for why.'"
+    ]
+  }
+}
