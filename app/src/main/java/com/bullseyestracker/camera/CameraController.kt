@@ -18,7 +18,6 @@ import java.util.concurrent.Executors
  * live-scoring screen (ImageAnalysis) and the photo-capture screen (ImageCapture).
  */
 class CameraController(private val context: Context) {
-
     private var imageCapture: ImageCapture? = null
 
     // Dedicated background executor for frame analysis — must never run on the main/UI thread
@@ -28,7 +27,7 @@ class CameraController(private val context: Context) {
     fun bindLiveDetection(
         lifecycleOwner: LifecycleOwner,
         previewView: PreviewView,
-        analyzer: ImageAnalysis.Analyzer
+        analyzer: ImageAnalysis.Analyzer,
     ) {
         val providerFuture: ListenableFuture<ProcessCameraProvider> =
             ProcessCameraProvider.getInstance(context)
@@ -36,14 +35,16 @@ class CameraController(private val context: Context) {
         providerFuture.addListener({
             val provider = providerFuture.get()
 
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
+            val preview =
+                Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
 
-            val analysis = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also { it.setAnalyzer(analysisExecutor, analyzer) }
+            val analysis =
+                ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .also { it.setAnalyzer(analysisExecutor, analyzer) }
 
             val capture = ImageCapture.Builder().build()
             imageCapture = capture
@@ -54,7 +55,7 @@ class CameraController(private val context: Context) {
                 CameraSelector.DEFAULT_BACK_CAMERA,
                 preview,
                 analysis,
-                capture
+                capture,
             )
         }, ContextCompat.getMainExecutor(context))
     }

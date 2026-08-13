@@ -10,10 +10,10 @@ import androidx.room.TypeConverters
         PlayerEntity::class,
         TurnEntity::class,
         ThrowEntity::class,
-        DetectionFrameEntity::class
+        DetectionFrameEntity::class,
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(Converters::class)
 abstract class BullseyesDatabase : RoomDatabase() {

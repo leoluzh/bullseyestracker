@@ -10,5 +10,5 @@ data class DetectionFrameEntity(
     val captureMode: CaptureMode,
     val imageRef: String,
     val capturedAt: Long,
-    val boardDetected: Boolean
+    val boardDetected: Boolean,
 )

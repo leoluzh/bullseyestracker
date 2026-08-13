@@ -10,5 +10,5 @@ data class Throw(
     val value: Int,
     /** Null when the throw was entered fully manually (no detection backing it). */
     val confidence: Float?,
-    val wasManuallyCorrected: Boolean
+    val wasManuallyCorrected: Boolean,
 )

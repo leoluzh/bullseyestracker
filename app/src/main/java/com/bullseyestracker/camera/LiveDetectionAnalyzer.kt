@@ -28,9 +28,8 @@ class LiveDetectionAnalyzer(
     private val cvEngine: CvEngine,
     private val onCalibrated: (BoardCalibration, confidence: Float) -> Unit,
     private val onBoardNotFound: () -> Unit,
-    private val onDetections: (List<DetectedThrow>) -> Unit
+    private val onDetections: (List<DetectedThrow>) -> Unit,
 ) : ImageAnalysis.Analyzer {
-
     @Volatile private var calibration: BoardCalibration? = null
 
     fun resetCalibration() {

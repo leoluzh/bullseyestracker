@@ -7,7 +7,7 @@ package com.bullseyestracker.cv
 data class RawDartDetection(
     val positionX: Float,
     val positionY: Float,
-    val confidence: Float
+    val confidence: Float,
 )
 
 /**
@@ -15,5 +15,8 @@ data class RawDartDetection(
  * [BoardDetector] and [ScoreMapper] per constitution Principle II — see [BoardDetector] doc.
  */
 interface DartDetector {
-    fun detect(frame: FrameInput, calibration: BoardCalibration): List<RawDartDetection>
+    fun detect(
+        frame: FrameInput,
+        calibration: BoardCalibration,
+    ): List<RawDartDetection>
 }

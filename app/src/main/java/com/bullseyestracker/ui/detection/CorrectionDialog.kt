@@ -28,7 +28,7 @@ import com.bullseyestracker.cv.ScoreCalculator
 fun CorrectionDialog(
     initial: DetectedThrow,
     onConfirm: (DetectedThrow) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var sectorNumber by remember { mutableStateOf(initial.sectorNumber ?: 20) }
     var ring by remember { mutableStateOf(initial.ring) }
@@ -53,25 +53,28 @@ fun CorrectionDialog(
                         sectorNumber = effectiveSector,
                         ring = ring,
                         value = ScoreCalculator.valueFor(effectiveSector, ring),
-                        confidence = 1f
-                    )
+                        confidence = 1f,
+                    ),
                 )
             }) { Text("Save") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
-        }
+        },
     )
 }
 
 @Composable
-private fun SectorPicker(selected: Int, onSelected: (Int) -> Unit) {
+private fun SectorPicker(
+    selected: Int,
+    onSelected: (Int) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     Row {
         Text("Sector: ", modifier = Modifier)
         Text(
             text = selected.toString(),
-            modifier = Modifier.clickable { expanded = true }
+            modifier = Modifier.clickable { expanded = true },
         )
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -81,20 +84,23 @@ private fun SectorPicker(selected: Int, onSelected: (Int) -> Unit) {
                 onClick = {
                     onSelected(number)
                     expanded = false
-                }
+                },
             )
         }
     }
 }
 
 @Composable
-private fun RingPicker(selected: Ring, onSelected: (Ring) -> Unit) {
+private fun RingPicker(
+    selected: Ring,
+    onSelected: (Ring) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     Row {
         Text("Ring: ")
         Text(
             text = selected.name,
-            modifier = Modifier.clickable { expanded = true }
+            modifier = Modifier.clickable { expanded = true },
         )
     }
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -104,7 +110,7 @@ private fun RingPicker(selected: Ring, onSelected: (Ring) -> Unit) {
                 onClick = {
                     onSelected(r)
                     expanded = false
-                }
+                },
             )
         }
     }

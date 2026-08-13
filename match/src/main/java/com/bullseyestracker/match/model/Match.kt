@@ -12,7 +12,7 @@ data class Match(
     val status: MatchStatus,
     val winnerId: String? = null,
     val startedAt: Long,
-    val endedAt: Long? = null
+    val endedAt: Long? = null,
 ) {
     init {
         require(players.size in 2..4) { "A match requires 2-4 players (spec FR-007, SC-004)." }

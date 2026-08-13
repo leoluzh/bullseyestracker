@@ -31,7 +31,7 @@ private val MARKER_SIZE = 32.dp
 fun DetectionOverlay(
     detections: List<DetectedThrow>,
     modifier: Modifier = Modifier,
-    onDetectionTapped: (DetectedThrow) -> Unit = {}
+    onDetectionTapped: (DetectedThrow) -> Unit = {},
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val density = LocalDensity.current
@@ -44,19 +44,20 @@ fun DetectionOverlay(
             val yDp = with(density) { (detection.boardPositionY * heightPx).toDp() } - (MARKER_SIZE / 2)
 
             androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .offset(x = xDp, y = yDp)
-                    .size(MARKER_SIZE)
-                    .clip(CircleShape)
-                    .background(if (isLowConfidence) Color(0xCCFFC107) else Color(0xCC00E676))
-                    .clickable { onDetectionTapped(detection) },
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .offset(x = xDp, y = yDp)
+                        .size(MARKER_SIZE)
+                        .clip(CircleShape)
+                        .background(if (isLowConfidence) Color(0xCCFFC107) else Color(0xCC00E676))
+                        .clickable { onDetectionTapped(detection) },
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = detection.value.toString(),
                     color = Color.Black,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }

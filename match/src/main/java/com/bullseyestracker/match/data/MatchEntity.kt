@@ -13,5 +13,5 @@ data class MatchEntity(
     val status: MatchStatus,
     val winnerId: String?,
     val startedAt: Long,
-    val endedAt: Long?
+    val endedAt: Long?,
 )

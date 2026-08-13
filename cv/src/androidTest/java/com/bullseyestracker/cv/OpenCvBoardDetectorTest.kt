@@ -23,7 +23,6 @@ import org.opencv.android.OpenCVLoader
  */
 @RunWith(AndroidJUnit4::class)
 class OpenCvBoardDetectorTest {
-
     private lateinit var detector: OpenCvBoardDetector
 
     @Before

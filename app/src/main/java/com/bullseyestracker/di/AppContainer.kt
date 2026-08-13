@@ -1,13 +1,11 @@
 package com.bullseyestracker.di
 
 import android.content.Context
-import androidx.room.Room
 import com.bullseyestracker.cv.CvEngine
 import com.bullseyestracker.cv.CvEngineImpl
 import com.bullseyestracker.cv.ScoreMapper
 import com.bullseyestracker.cv.opencv.OpenCvBoardDetector
 import com.bullseyestracker.cv.opencv.OpenCvDartDetector
-import com.bullseyestracker.match.data.BullseyesDatabase
 import com.bullseyestracker.match.data.MatchRepository
 
 /**
@@ -15,24 +13,15 @@ import com.bullseyestracker.match.data.MatchRepository
  * small, static dependency graph — plain lazily-constructed singletons are enough.
  */
 class AppContainer(context: Context) {
-
     val cvEngine: CvEngine by lazy {
         CvEngineImpl(
             boardDetector = OpenCvBoardDetector(),
             dartDetector = OpenCvDartDetector(),
-            scoreMapper = ScoreMapper()
+            scoreMapper = ScoreMapper(),
         )
     }
 
-    private val database: BullseyesDatabase by lazy {
-        Room.databaseBuilder(
-            context.applicationContext,
-            BullseyesDatabase::class.java,
-            "bullseyestracker.db"
-        ).build()
-    }
-
     val matchRepository: MatchRepository by lazy {
-        MatchRepository(database.matchDao())
+        MatchRepository.create(context)
     }
 }

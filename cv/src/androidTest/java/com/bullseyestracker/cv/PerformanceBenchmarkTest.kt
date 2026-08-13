@@ -24,7 +24,6 @@ import org.opencv.android.OpenCVLoader
  */
 @RunWith(AndroidJUnit4::class)
 class PerformanceBenchmarkTest {
-
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 

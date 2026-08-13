@@ -19,7 +19,6 @@ import org.opencv.imgproc.Imgproc
  * separate x/y scaling — acceptable for v1 given CameraX's default capture aspect ratios.
  */
 class OpenCvBoardDetector : BoardDetector {
-
     override fun calibrate(frame: FrameInput): BoardCalibrationResult {
         val rgba = Mat()
         Utils.bitmapToMat(frame.bitmap, rgba)
@@ -38,7 +37,7 @@ class OpenCvBoardDetector : BoardDetector {
             100.0,
             60.0,
             (gray.cols() * MIN_RADIUS_FRACTION).toInt(),
-            (gray.cols() * MAX_RADIUS_FRACTION).toInt()
+            (gray.cols() * MAX_RADIUS_FRACTION).toInt(),
         )
 
         if (circles.cols() == 0) {
@@ -62,17 +61,18 @@ class OpenCvBoardDetector : BoardDetector {
         gray.release()
         circles.release()
 
-        val calibration = BoardCalibration(
-            centerX = centerXPx / width,
-            centerY = centerYPx / height,
-            innerBullRadius = outerRadiusPx * INNER_BULL_RATIO / width,
-            outerBullRadius = outerRadiusPx * OUTER_BULL_RATIO / width,
-            tripleRingInnerRadius = outerRadiusPx * TRIPLE_INNER_RATIO / width,
-            tripleRingOuterRadius = outerRadiusPx * TRIPLE_OUTER_RATIO / width,
-            doubleRingInnerRadius = outerRadiusPx * DOUBLE_INNER_RATIO / width,
-            doubleRingOuterRadius = outerRadiusPx / width,
-            rotationOffsetDegrees = 0f
-        )
+        val calibration =
+            BoardCalibration(
+                centerX = centerXPx / width,
+                centerY = centerYPx / height,
+                innerBullRadius = outerRadiusPx * INNER_BULL_RATIO / width,
+                outerBullRadius = outerRadiusPx * OUTER_BULL_RATIO / width,
+                tripleRingInnerRadius = outerRadiusPx * TRIPLE_INNER_RATIO / width,
+                tripleRingOuterRadius = outerRadiusPx * TRIPLE_OUTER_RATIO / width,
+                doubleRingInnerRadius = outerRadiusPx * DOUBLE_INNER_RATIO / width,
+                doubleRingOuterRadius = outerRadiusPx / width,
+                rotationOffsetDegrees = 0f,
+            )
 
         // Heuristic placeholder confidence — a single, cleanly detected dominant circle scores
         // high. Real confidence calibration needs empirical validation against T044's fixture set.

@@ -1,7 +1,7 @@
 package com.bullseyestracker.cv.opencv
 
-import com.bullseyestracker.cv.DartDetector
 import com.bullseyestracker.cv.BoardCalibration
+import com.bullseyestracker.cv.DartDetector
 import com.bullseyestracker.cv.FrameInput
 import com.bullseyestracker.cv.RawDartDetection
 import org.opencv.android.Utils
@@ -21,10 +21,12 @@ import org.opencv.imgproc.Imgproc
  * Requires the OpenCV native library to be loaded before use, same as [OpenCvBoardDetector].
  */
 class OpenCvDartDetector : DartDetector {
-
     private var baseline: Mat? = null
 
-    override fun detect(frame: FrameInput, calibration: BoardCalibration): List<RawDartDetection> {
+    override fun detect(
+        frame: FrameInput,
+        calibration: BoardCalibration,
+    ): List<RawDartDetection> {
         val rgba = Mat()
         Utils.bitmapToMat(frame.bitmap, rgba)
 
@@ -52,17 +54,18 @@ class OpenCvDartDetector : DartDetector {
         val minArea = width * height * MIN_AREA_RATIO
         val maxArea = width * height * MAX_AREA_RATIO
 
-        val detections = contours.mapNotNull { contour ->
-            val area = Imgproc.contourArea(contour)
-            if (area < minArea || area > maxArea) return@mapNotNull null
-            val moments = Imgproc.moments(contour)
-            if (moments.m00 == 0.0) return@mapNotNull null
-            RawDartDetection(
-                positionX = (moments.m10 / moments.m00).toFloat() / width,
-                positionY = (moments.m01 / moments.m00).toFloat() / height,
-                confidence = (area / maxArea).toFloat().coerceIn(0f, 1f)
-            )
-        }
+        val detections =
+            contours.mapNotNull { contour ->
+                val area = Imgproc.contourArea(contour)
+                if (area < minArea || area > maxArea) return@mapNotNull null
+                val moments = Imgproc.moments(contour)
+                if (moments.m00 == 0.0) return@mapNotNull null
+                RawDartDetection(
+                    positionX = (moments.m10 / moments.m00).toFloat() / width,
+                    positionY = (moments.m01 / moments.m00).toFloat() / height,
+                    confidence = (area / maxArea).toFloat().coerceIn(0f, 1f),
+                )
+            }
 
         gray.release()
         rgba.release()

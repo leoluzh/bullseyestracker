@@ -9,12 +9,16 @@ import android.graphics.Bitmap
  */
 interface CvEngine {
     fun calibrateBoard(frame: FrameInput): BoardCalibrationResult
-    fun detectThrows(frame: FrameInput, calibration: BoardCalibration): List<DetectedThrow>
+
+    fun detectThrows(
+        frame: FrameInput,
+        calibration: BoardCalibration,
+    ): List<DetectedThrow>
 }
 
 data class FrameInput(
     val bitmap: Bitmap,
-    val rotationDegrees: Int = 0
+    val rotationDegrees: Int = 0,
 )
 
 /**
@@ -31,11 +35,12 @@ data class BoardCalibration(
     val tripleRingOuterRadius: Float,
     val doubleRingInnerRadius: Float,
     val doubleRingOuterRadius: Float,
-    val rotationOffsetDegrees: Float
+    val rotationOffsetDegrees: Float,
 )
 
 sealed interface BoardCalibrationResult {
     data class Calibrated(val calibration: BoardCalibration, val confidence: Float) : BoardCalibrationResult
+
     data object NotFound : BoardCalibrationResult
 }
 
@@ -49,5 +54,5 @@ data class DetectedThrow(
     val confidence: Float,
     /** Normalized 0..1 position within the frame (see [BoardCalibration]), for overlay rendering. */
     val boardPositionX: Float,
-    val boardPositionY: Float
+    val boardPositionY: Float,
 )

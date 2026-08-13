@@ -31,7 +31,7 @@ import com.bullseyestracker.cv.DetectedThrow
 @Composable
 fun LiveScoringScreen(
     cvEngine: CvEngine,
-    onTurnConfirmed: (List<DetectedThrow>) -> Unit
+    onTurnConfirmed: (List<DetectedThrow>) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -41,26 +41,28 @@ fun LiveScoringScreen(
     var correctingIndex by remember { mutableStateOf(-1) }
 
     val cameraController = remember { CameraController(context) }
-    val analyzer = remember {
-        LiveDetectionAnalyzer(
-            cvEngine = cvEngine,
-            onCalibrated = { _, confidence ->
-                boardStatus = if (confidence < 0.5f) {
-                    "Board found (low confidence) — hold steady"
-                } else {
-                    "Board calibrated"
-                }
-            },
-            onBoardNotFound = {
-                boardStatus = "No dartboard found — point the camera at the board"
-            },
-            onDetections = { detections ->
-                // DartDetector only reports newly-appeared darts per call, so appending (not
-                // replacing) accumulates the turn; takeLast(3) caps it if more than 3 land.
-                currentThrows = (currentThrows + detections).takeLast(3)
-            }
-        )
-    }
+    val analyzer =
+        remember {
+            LiveDetectionAnalyzer(
+                cvEngine = cvEngine,
+                onCalibrated = { _, confidence ->
+                    boardStatus =
+                        if (confidence < 0.5f) {
+                            "Board found (low confidence) — hold steady"
+                        } else {
+                            "Board calibrated"
+                        }
+                },
+                onBoardNotFound = {
+                    boardStatus = "No dartboard found — point the camera at the board"
+                },
+                onDetections = { detections ->
+                    // DartDetector only reports newly-appeared darts per call, so appending (not
+                    // replacing) accumulates the turn; takeLast(3) caps it if more than 3 land.
+                    currentThrows = (currentThrows + detections).takeLast(3)
+                },
+            )
+        }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -69,13 +71,13 @@ fun LiveScoringScreen(
                 PreviewView(ctx).also { previewView ->
                     cameraController.bindLiveDetection(lifecycleOwner, previewView, analyzer)
                 }
-            }
+            },
         )
 
         DetectionOverlay(
             detections = currentThrows,
             modifier = Modifier.fillMaxSize(),
-            onDetectionTapped = { tapped -> correctingIndex = currentThrows.indexOf(tapped) }
+            onDetectionTapped = { tapped -> correctingIndex = currentThrows.indexOf(tapped) },
         )
 
         Column(modifier = Modifier.padding(16.dp)) {
@@ -86,7 +88,7 @@ fun LiveScoringScreen(
                     onTurnConfirmed(currentThrows)
                     currentThrows = emptyList()
                 },
-                enabled = currentThrows.isNotEmpty()
+                enabled = currentThrows.isNotEmpty(),
             ) {
                 Text("Confirm turn")
             }
@@ -100,7 +102,7 @@ fun LiveScoringScreen(
                 currentThrows = currentThrows.toMutableList().also { it[correctingIndex] = corrected }
                 correctingIndex = -1
             },
-            onDismiss = { correctingIndex = -1 }
+            onDismiss = { correctingIndex = -1 },
         )
     }
 }

@@ -12,9 +12,9 @@ import com.bullseyestracker.match.model.ThrowRing
             entity = TurnEntity::class,
             parentColumns = ["id"],
             childColumns = ["turnId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class ThrowEntity(
     @PrimaryKey val id: String,
@@ -24,5 +24,5 @@ data class ThrowEntity(
     val ring: ThrowRing,
     val value: Int,
     val confidence: Float?,
-    val wasManuallyCorrected: Boolean
+    val wasManuallyCorrected: Boolean,
 )

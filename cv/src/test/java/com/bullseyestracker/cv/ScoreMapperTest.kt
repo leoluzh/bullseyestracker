@@ -6,23 +6,26 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class ScoreMapperTest {
-
-    private val calibration = BoardCalibration(
-        centerX = 500f,
-        centerY = 500f,
-        innerBullRadius = 10f,
-        outerBullRadius = 25f,
-        tripleRingInnerRadius = 150f,
-        tripleRingOuterRadius = 165f,
-        doubleRingInnerRadius = 210f,
-        doubleRingOuterRadius = 225f,
-        rotationOffsetDegrees = 0f
-    )
+    private val calibration =
+        BoardCalibration(
+            centerX = 500f,
+            centerY = 500f,
+            innerBullRadius = 10f,
+            outerBullRadius = 25f,
+            tripleRingInnerRadius = 150f,
+            tripleRingOuterRadius = 165f,
+            doubleRingInnerRadius = 210f,
+            doubleRingOuterRadius = 225f,
+            rotationOffsetDegrees = 0f,
+        )
 
     private val mapper = ScoreMapper()
 
     /** angleDegrees: 0 = top (12 o'clock), increasing clockwise, matching ScoreMapper's convention. */
-    private fun pointAt(angleDegrees: Float, radius: Float): Pair<Float, Float> {
+    private fun pointAt(
+        angleDegrees: Float,
+        radius: Float,
+    ): Pair<Float, Float> {
         val rad = Math.toRadians(angleDegrees.toDouble())
         val x = calibration.centerX + radius * sin(rad).toFloat()
         val y = calibration.centerY - radius * cos(rad).toFloat()

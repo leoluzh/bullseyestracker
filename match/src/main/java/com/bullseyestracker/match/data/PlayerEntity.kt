@@ -12,9 +12,9 @@ import com.bullseyestracker.match.model.CricketNumber
             entity = MatchEntity::class,
             parentColumns = ["id"],
             childColumns = ["matchId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class PlayerEntity(
     @PrimaryKey val id: String,
@@ -23,5 +23,5 @@ data class PlayerEntity(
     val orderIndex: Int,
     val remainingScore: Int?,
     val marks: Map<CricketNumber, Int>,
-    val points: Int
+    val points: Int,
 )

@@ -19,7 +19,6 @@ import org.opencv.android.OpenCVLoader
  */
 @RunWith(AndroidJUnit4::class)
 class OpenCvDartDetectorTest {
-
     private lateinit var boardDetector: OpenCvBoardDetector
     private lateinit var dartDetector: OpenCvDartDetector
 

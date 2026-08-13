@@ -22,6 +22,12 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    // Mockito's ByteBuddy doesn't officially support very new JDKs yet; this opts into
+    // ByteBuddy's experimental mode so `mock(Bitmap::class.java)` works on JDK 26.
+    jvmArgs("-Dnet.bytebuddy.experimental=true")
+}
+
 dependencies {
     // OpenCV publishes an official Android AAR to Maven Central since 4.9.0.
     implementation("org.opencv:opencv:4.9.0")

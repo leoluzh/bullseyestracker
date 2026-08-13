@@ -12,15 +12,15 @@ import com.bullseyestracker.match.model.TurnOutcome
             entity = MatchEntity::class,
             parentColumns = ["id"],
             childColumns = ["matchId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = PlayerEntity::class,
             parentColumns = ["id"],
             childColumns = ["playerId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class TurnEntity(
     @PrimaryKey val id: String,
@@ -28,5 +28,5 @@ data class TurnEntity(
     val playerId: String,
     val turnIndex: Int,
     val outcome: TurnOutcome,
-    val sourceFrameId: String?
+    val sourceFrameId: String?,
 )
