@@ -38,6 +38,6 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.8.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.benchmark:benchmark-junit4:1.2.3")
 }
