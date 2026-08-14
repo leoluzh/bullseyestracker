@@ -1,7 +1,9 @@
 package com.bullseyestracker.match.model
 
 /** Numbers a Cricket player can mark: 15-20 plus the bull. */
-enum class CricketNumber(val pointValue: Int) {
+enum class CricketNumber(
+    val pointValue: Int,
+) {
     FIFTEEN(15),
     SIXTEEN(16),
     SEVENTEEN(17),

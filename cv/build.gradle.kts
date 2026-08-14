@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.bullseyestracker.cv"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26

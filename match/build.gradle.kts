@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.bullseyestracker.match"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26

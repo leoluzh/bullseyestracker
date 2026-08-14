@@ -17,7 +17,9 @@ import java.util.concurrent.Executors
  * (no Composable/View coupling beyond the PreviewView surface) so it can back both the
  * live-scoring screen (ImageAnalysis) and the photo-capture screen (ImageCapture).
  */
-class CameraController(private val context: Context) {
+class CameraController(
+    private val context: Context,
+) {
     private var imageCapture: ImageCapture? = null
 
     // Dedicated background executor for frame analysis — must never run on the main/UI thread
@@ -41,7 +43,8 @@ class CameraController(private val context: Context) {
                 }
 
             val analysis =
-                ImageAnalysis.Builder()
+                ImageAnalysis
+                    .Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                     .also { it.setAnalyzer(analysisExecutor, analyzer) }
@@ -55,6 +58,39 @@ class CameraController(private val context: Context) {
                 CameraSelector.DEFAULT_BACK_CAMERA,
                 preview,
                 analysis,
+                capture,
+            )
+        }, ContextCompat.getMainExecutor(context))
+    }
+
+    /**
+     * Binds preview + capture only (no [ImageAnalysis]) — backs the photo-capture screen (US2),
+     * which takes one photo on demand rather than running the continuous analysis pipeline
+     * LiveDetectionAnalyzer needs.
+     */
+    fun bindPhotoCapture(
+        lifecycleOwner: LifecycleOwner,
+        previewView: PreviewView,
+    ) {
+        val providerFuture: ListenableFuture<ProcessCameraProvider> =
+            ProcessCameraProvider.getInstance(context)
+
+        providerFuture.addListener({
+            val provider = providerFuture.get()
+
+            val preview =
+                Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
+
+            val capture = ImageCapture.Builder().build()
+            imageCapture = capture
+
+            provider.unbindAll()
+            provider.bindToLifecycle(
+                lifecycleOwner,
+                CameraSelector.DEFAULT_BACK_CAMERA,
+                preview,
                 capture,
             )
         }, ContextCompat.getMainExecutor(context))

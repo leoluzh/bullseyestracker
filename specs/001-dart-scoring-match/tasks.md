@@ -114,13 +114,13 @@ count and per-dart score, no live-camera session involved.
 
 ### Tests for User Story 2 (mandatory per constitution Principle III) ⚠️
 
-- [ ] T026 [P] [US2] Unit test `CvEngine.detectThrows()` against a captured-photo fixture, confirming identical scoring output as the equivalent live-frame fixture in `cv/src/test/java/com/bullseyestracker/cv/PhotoDetectionTest.kt`
+- [X] T026 [P] [US2] Unit test `CvEngine.detectThrows()` against a captured-photo fixture, confirming identical scoring output as the equivalent live-frame fixture in `cv/src/test/java/com/bullseyestracker/cv/PhotoDetectionTest.kt`
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Wire CameraX `ImageCapture` use case for single-photo capture in `app/src/main/java/com/bullseyestracker/camera/PhotoCaptureController.kt` (depends on T011)
-- [ ] T028 [US2] Build `PhotoScoringScreen` reusing `DetectionOverlay`/`CorrectionDialog` from US1 in `app/src/main/java/com/bullseyestracker/ui/detection/PhotoScoringScreen.kt` (depends on T022, T024, T027, T020)
-- [ ] T029 [US2] Add capture-mode switch (Photo vs Live Camera) to the scoring entry screen in `app/src/main/java/com/bullseyestracker/ui/detection/CaptureModeSelector.kt` (depends on T023, T028)
+- [X] T027 [US2] Wire CameraX `ImageCapture` use case for single-photo capture in `app/src/main/java/com/bullseyestracker/camera/PhotoCaptureController.kt` (depends on T011)
+- [X] T028 [US2] Build `PhotoScoringScreen` reusing `DetectionOverlay`/`CorrectionDialog` from US1 in `app/src/main/java/com/bullseyestracker/ui/detection/PhotoScoringScreen.kt` (depends on T022, T024, T027, T020)
+- [X] T029 [US2] Add capture-mode switch (Photo vs Live Camera) to the scoring entry screen in `app/src/main/java/com/bullseyestracker/ui/detection/CaptureModeSelector.kt` (depends on T023, T028)
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 

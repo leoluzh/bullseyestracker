@@ -39,7 +39,10 @@ data class BoardCalibration(
 )
 
 sealed interface BoardCalibrationResult {
-    data class Calibrated(val calibration: BoardCalibration, val confidence: Float) : BoardCalibrationResult
+    data class Calibrated(
+        val calibration: BoardCalibration,
+        val confidence: Float,
+    ) : BoardCalibrationResult
 
     data object NotFound : BoardCalibrationResult
 }
