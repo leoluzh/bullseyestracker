@@ -30,9 +30,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // Used only to satisfy FrameInput's Bitmap field in plain-JVM tests that never call
     // methods on it (CvEngineImpl and ScoreMapper never touch Bitmap contents/dimensions).
-    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito:mockito-core:5.23.0")
 
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.benchmark:benchmark-junit4:1.2.3")
 }
