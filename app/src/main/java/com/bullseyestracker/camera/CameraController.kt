@@ -60,5 +60,38 @@ class CameraController(private val context: Context) {
         }, ContextCompat.getMainExecutor(context))
     }
 
+    /**
+     * Binds preview + capture only (no [ImageAnalysis]) — backs the photo-capture screen (US2),
+     * which takes one photo on demand rather than running the continuous analysis pipeline
+     * LiveDetectionAnalyzer needs.
+     */
+    fun bindPhotoCapture(
+        lifecycleOwner: LifecycleOwner,
+        previewView: PreviewView,
+    ) {
+        val providerFuture: ListenableFuture<ProcessCameraProvider> =
+            ProcessCameraProvider.getInstance(context)
+
+        providerFuture.addListener({
+            val provider = providerFuture.get()
+
+            val preview =
+                Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
+
+            val capture = ImageCapture.Builder().build()
+            imageCapture = capture
+
+            provider.unbindAll()
+            provider.bindToLifecycle(
+                lifecycleOwner,
+                CameraSelector.DEFAULT_BACK_CAMERA,
+                preview,
+                capture,
+            )
+        }, ContextCompat.getMainExecutor(context))
+    }
+
     fun currentImageCapture(): ImageCapture? = imageCapture
 }
