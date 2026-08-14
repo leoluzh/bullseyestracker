@@ -3,7 +3,11 @@ package com.bullseyestracker.cv
 import kotlin.math.atan2
 import kotlin.math.hypot
 
-data class ScoreResult(val sectorNumber: Int?, val ring: Ring, val value: Int)
+data class ScoreResult(
+    val sectorNumber: Int?,
+    val ring: Ring,
+    val value: Int,
+)
 
 /**
  * Maps a pixel position to a dartboard sector/ring given the board's calibration geometry.
@@ -12,7 +16,26 @@ data class ScoreResult(val sectorNumber: Int?, val ring: Ring, val value: Int)
 class ScoreMapper {
     private val sectorOrderClockwiseFromTwenty =
         intArrayOf(
-            20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5,
+            20,
+            1,
+            18,
+            4,
+            13,
+            6,
+            10,
+            15,
+            2,
+            17,
+            3,
+            19,
+            7,
+            16,
+            8,
+            11,
+            14,
+            9,
+            12,
+            5,
         )
     private val sectorWidthDegrees = 360f / 20f
 

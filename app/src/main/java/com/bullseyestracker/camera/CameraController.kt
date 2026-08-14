@@ -17,7 +17,9 @@ import java.util.concurrent.Executors
  * (no Composable/View coupling beyond the PreviewView surface) so it can back both the
  * live-scoring screen (ImageAnalysis) and the photo-capture screen (ImageCapture).
  */
-class CameraController(private val context: Context) {
+class CameraController(
+    private val context: Context,
+) {
     private var imageCapture: ImageCapture? = null
 
     // Dedicated background executor for frame analysis — must never run on the main/UI thread
@@ -41,7 +43,8 @@ class CameraController(private val context: Context) {
                 }
 
             val analysis =
-                ImageAnalysis.Builder()
+                ImageAnalysis
+                    .Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                     .also { it.setAnalyzer(analysisExecutor, analyzer) }

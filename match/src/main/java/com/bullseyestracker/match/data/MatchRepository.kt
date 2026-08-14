@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
-class MatchRepository(private val dao: MatchDao) {
+class MatchRepository(
+    private val dao: MatchDao,
+) {
     companion object {
         /**
          * Builds a repository backed by a real Room database. The only place `match` exposes
@@ -22,11 +24,12 @@ class MatchRepository(private val dao: MatchDao) {
          */
         fun create(context: Context): MatchRepository {
             val database =
-                Room.databaseBuilder(
-                    context.applicationContext,
-                    BullseyesDatabase::class.java,
-                    "bullseyestracker.db",
-                ).build()
+                Room
+                    .databaseBuilder(
+                        context.applicationContext,
+                        BullseyesDatabase::class.java,
+                        "bullseyestracker.db",
+                    ).build()
             return MatchRepository(database.matchDao())
         }
     }

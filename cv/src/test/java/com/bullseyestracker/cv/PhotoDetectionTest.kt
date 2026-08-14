@@ -11,11 +11,15 @@ import org.mockito.Mockito.mock
  * Uses the same fakes as CvEngineContractTest so this runs on a plain JVM (no OpenCV).
  */
 class PhotoDetectionTest {
-    private class FakeBoardDetector(private val result: BoardCalibrationResult) : BoardDetector {
+    private class FakeBoardDetector(
+        private val result: BoardCalibrationResult,
+    ) : BoardDetector {
         override fun calibrate(frame: FrameInput): BoardCalibrationResult = result
     }
 
-    private class FakeDartDetector(private val detections: List<RawDartDetection>) : DartDetector {
+    private class FakeDartDetector(
+        private val detections: List<RawDartDetection>,
+    ) : DartDetector {
         override fun detect(
             frame: FrameInput,
             calibration: BoardCalibration,

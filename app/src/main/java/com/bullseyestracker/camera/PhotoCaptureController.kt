@@ -18,7 +18,9 @@ import java.util.concurrent.Executors
  * `FrameInput` for `CvEngine.detectThrows()` — the same entry point LiveDetectionAnalyzer uses,
  * so a captured photo scores identically to a live frame (see PhotoDetectionTest).
  */
-class PhotoCaptureController(private val context: Context) {
+class PhotoCaptureController(
+    private val context: Context,
+) {
     private val cameraController = CameraController(context)
     private val captureExecutor = Executors.newSingleThreadExecutor()
 
