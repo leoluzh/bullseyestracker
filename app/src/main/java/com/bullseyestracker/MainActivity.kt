@@ -25,11 +25,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bullseyestracker.cv.CvNativeInit
 import com.bullseyestracker.cv.DetectedThrow
 import com.bullseyestracker.di.AppContainer
+import com.bullseyestracker.match.model.GameMode
 import com.bullseyestracker.match.model.MatchStatus
 import com.bullseyestracker.ui.detection.CaptureMode
 import com.bullseyestracker.ui.detection.CaptureModeSelector
 import com.bullseyestracker.ui.detection.LiveScoringScreen
 import com.bullseyestracker.ui.detection.PhotoScoringScreen
+import com.bullseyestracker.ui.match.CricketScoreboardScreen
 import com.bullseyestracker.ui.match.FiveOOneScoreboardScreen
 import com.bullseyestracker.ui.match.MatchSetupScreen
 import com.bullseyestracker.ui.match.MatchViewModel
@@ -74,7 +76,10 @@ class MainActivity : ComponentActivity() {
                             MatchSetupScreen(onStartMatch = matchViewModel::startMatch)
                         } else {
                             Column(modifier = Modifier.fillMaxSize()) {
-                                FiveOOneScoreboardScreen(match = currentMatch)
+                                when (currentMatch.gameMode) {
+                                    GameMode.FIVE_O_ONE -> FiveOOneScoreboardScreen(match = currentMatch)
+                                    GameMode.CRICKET -> CricketScoreboardScreen(match = currentMatch)
+                                }
                                 if (currentMatch.status == MatchStatus.COMPLETED) {
                                     Button(onClick = { matchViewModel.startNewMatch() }) {
                                         Text("New match")
