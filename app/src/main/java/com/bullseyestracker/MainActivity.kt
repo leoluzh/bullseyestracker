@@ -31,12 +31,31 @@ import com.bullseyestracker.ui.detection.CaptureMode
 import com.bullseyestracker.ui.detection.CaptureModeSelector
 import com.bullseyestracker.ui.detection.LiveScoringScreen
 import com.bullseyestracker.ui.detection.PhotoScoringScreen
+import com.bullseyestracker.ui.history.HistoryViewModel
+import com.bullseyestracker.ui.history.HistoryViewModelFactory
+import com.bullseyestracker.ui.history.MatchHistoryDetailScreen
+import com.bullseyestracker.ui.history.MatchHistoryScreen
 import com.bullseyestracker.ui.match.CricketScoreboardScreen
 import com.bullseyestracker.ui.match.FiveOOneScoreboardScreen
 import com.bullseyestracker.ui.match.MatchSetupScreen
 import com.bullseyestracker.ui.match.MatchViewModel
 import com.bullseyestracker.ui.match.MatchViewModelFactory
 import com.bullseyestracker.ui.theme.BullseyesTrackerTheme
+
+/**
+ * Start-screen navigation state (spec 005-match-history User Story 2). Only reachable when no
+ * match is in-progress — an in-progress/resumed match always takes over the UI via
+ * [MatchViewModel.match] regardless of this state (spec FR-001-003, unaffected by this feature).
+ */
+private sealed class AppScreen {
+    data object Setup : AppScreen()
+
+    data object History : AppScreen()
+
+    data class HistoryDetail(
+        val matchId: String,
+    ) : AppScreen()
+}
 
 class MainActivity : ComponentActivity() {
     private lateinit var appContainer: AppContainer
@@ -64,8 +83,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var captureMode by remember { mutableStateOf(CaptureMode.LIVE_CAMERA) }
+            var screen by remember { mutableStateOf<AppScreen>(AppScreen.Setup) }
             val matchViewModel: MatchViewModel =
                 viewModel(factory = MatchViewModelFactory(appContainer.matchRepository))
+            val historyViewModel: HistoryViewModel =
+                viewModel(factory = HistoryViewModelFactory(appContainer.matchRepository))
             val match by matchViewModel.match.collectAsState()
 
             BullseyesTrackerTheme {
@@ -73,7 +95,36 @@ class MainActivity : ComponentActivity() {
                     if (cameraPermissionGranted) {
                         val currentMatch = match
                         if (currentMatch == null) {
-                            MatchSetupScreen(onStartMatch = matchViewModel::startMatch)
+                            when (screen) {
+                                AppScreen.Setup ->
+                                    Column(modifier = Modifier.fillMaxSize()) {
+                                        Button(onClick = { screen = AppScreen.History }) {
+                                            Text("Match history")
+                                        }
+                                        MatchSetupScreen(onStartMatch = matchViewModel::startMatch)
+                                    }
+                                AppScreen.History ->
+                                    MatchHistoryScreen(
+                                        viewModel = historyViewModel,
+                                        onMatchSelected = { matchId ->
+                                            historyViewModel.selectMatch(matchId)
+                                            screen = AppScreen.HistoryDetail(matchId)
+                                        },
+                                        onBack = { screen = AppScreen.Setup },
+                                    )
+                                is AppScreen.HistoryDetail -> {
+                                    val selectedMatch by historyViewModel.selectedMatch.collectAsState()
+                                    selectedMatch?.let { detailMatch ->
+                                        MatchHistoryDetailScreen(
+                                            match = detailMatch,
+                                            onBack = {
+                                                historyViewModel.clearSelection()
+                                                screen = AppScreen.History
+                                            },
+                                        )
+                                    }
+                                }
+                            }
                         } else {
                             Column(modifier = Modifier.fillMaxSize()) {
                                 when (currentMatch.gameMode) {
