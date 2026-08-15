@@ -68,4 +68,4 @@ Run `make help` for the full command list.
 
 ## License
 
-Not yet decided.
+Licensed under the [Apache License, Version 2.0](LICENSE).

@@ -66,4 +66,3 @@ make lint / format    # ktlint check / autofix
   until someone adds them (`tasks.md` T044).
 - User Stories 2-4 (photo scoring, 501 match, Cricket match) and the Polish phase are specified
   in `tasks.md` but not implemented.
-- No LICENSE chosen yet.
