@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,13 +21,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bullseyestracker.cv.CvNativeInit
 import com.bullseyestracker.cv.DetectedThrow
 import com.bullseyestracker.di.AppContainer
+import com.bullseyestracker.match.model.MatchStatus
 import com.bullseyestracker.ui.detection.CaptureMode
 import com.bullseyestracker.ui.detection.CaptureModeSelector
 import com.bullseyestracker.ui.detection.LiveScoringScreen
 import com.bullseyestracker.ui.detection.PhotoScoringScreen
+import com.bullseyestracker.ui.match.FiveOOneScoreboardScreen
+import com.bullseyestracker.ui.match.MatchSetupScreen
+import com.bullseyestracker.ui.match.MatchViewModel
+import com.bullseyestracker.ui.match.MatchViewModelFactory
 import com.bullseyestracker.ui.theme.BullseyesTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,32 +62,44 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var captureMode by remember { mutableStateOf(CaptureMode.LIVE_CAMERA) }
+            val matchViewModel: MatchViewModel =
+                viewModel(factory = MatchViewModelFactory(appContainer.matchRepository))
+            val match by matchViewModel.match.collectAsState()
 
             BullseyesTrackerTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     if (cameraPermissionGranted) {
-                        val onTurnConfirmed: (List<DetectedThrow>) -> Unit = {
-                            // Match-mode wiring (US3/US4, MatchViewModel) not yet built —
-                            // confirmed turns are discarded until that phase lands.
-                        }
-
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            CaptureModeSelector(
-                                selected = captureMode,
-                                onSelected = { captureMode = it },
-                            )
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                when (captureMode) {
-                                    CaptureMode.LIVE_CAMERA ->
-                                        LiveScoringScreen(
-                                            cvEngine = appContainer.cvEngine,
-                                            onTurnConfirmed = onTurnConfirmed,
-                                        )
-                                    CaptureMode.PHOTO ->
-                                        PhotoScoringScreen(
-                                            cvEngine = appContainer.cvEngine,
-                                            onTurnConfirmed = onTurnConfirmed,
-                                        )
+                        val currentMatch = match
+                        if (currentMatch == null) {
+                            MatchSetupScreen(onStartMatch = matchViewModel::startMatch)
+                        } else {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                FiveOOneScoreboardScreen(match = currentMatch)
+                                if (currentMatch.status == MatchStatus.COMPLETED) {
+                                    Button(onClick = { matchViewModel.startNewMatch() }) {
+                                        Text("New match")
+                                    }
+                                } else {
+                                    CaptureModeSelector(
+                                        selected = captureMode,
+                                        onSelected = { captureMode = it },
+                                    )
+                                    Box(modifier = Modifier.fillMaxSize()) {
+                                        val onTurnConfirmed: (List<DetectedThrow>) -> Unit =
+                                            matchViewModel::confirmTurn
+                                        when (captureMode) {
+                                            CaptureMode.LIVE_CAMERA ->
+                                                LiveScoringScreen(
+                                                    cvEngine = appContainer.cvEngine,
+                                                    onTurnConfirmed = onTurnConfirmed,
+                                                )
+                                            CaptureMode.PHOTO ->
+                                                PhotoScoringScreen(
+                                                    cvEngine = appContainer.cvEngine,
+                                                    onTurnConfirmed = onTurnConfirmed,
+                                                )
+                                        }
+                                    }
                                 }
                             }
                         }
