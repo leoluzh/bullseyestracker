@@ -1,0 +1,36 @@
+documentation:
+  - 'README.md'
+  - 'CHANGELOG.md'
+  - 'CONTRIBUTING.md'
+  - 'specs/**'
+  - 'docs/**'
+  - '**.md'
+
+android:
+  - 'app/**'
+  - 'build.gradle'
+  - 'build.gradle.kts'
+  - 'gradle.properties'
+
+cv:
+  - 'cv/**'
+
+match:
+  - 'match/**'
+
+testing:
+  - '**/*Test.kt'
+  - '**/*Tests.kt'
+  - 'src/test/**'
+  - 'src/androidTest/**'
+
+build:
+  - '**.gradle'
+  - '**.gradle.kts'
+  - 'gradle/**'
+  - '.github/workflows/**'
+
+dependencies:
+  - 'build.gradle'
+  - 'build.gradle.kts'
+  - 'gradle.properties'
