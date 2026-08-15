@@ -8,8 +8,9 @@ decisions more than anything here.
 
 Android app that auto-scores darts via on-device computer vision (OpenCV). Fully offline, no
 backend. Built with a spec-driven workflow ([spec-kit](https://github.com/github/spec-kit));
-the active feature lives in `specs/001-dart-scoring-match/` (spec, plan, research, data-model,
-contracts, tasks).
+each feature has its own spec/plan/tasks under `specs/NNN-*/`. The core scoring/match feature set
+(`specs/001-dart-scoring-match/` through `specs/004-cricket-match/`) is implemented; later specs
+add polish (match history/resume, a fixture-image test harness, project maintenance).
 
 ## Module boundaries (do not violate)
 
@@ -24,13 +25,13 @@ contracts, tasks).
   plain-JVM unit-testable (`cv/src/test/`) without an Android runtime, while the OpenCV-touching
   classes are instrumented-tested (`cv/src/androidTest/`) since OpenCV's native lib only loads
   on a device/emulator.
-- `match` — game rules (501, Cricket — not yet implemented) and Room persistence.
+- `match` — game rules (501, Cricket) and Room persistence.
 
 ## Constitution-mandated testing (non-negotiable)
 
 Anything that maps a detected position to a score — `ScoreMapper`, `BoardDetector`/
-`DartDetector`, and (once built) `X501Rules`/`CricketRules` — needs a test written and failing
-*before* the implementation. This is enforced by convention, not tooling; don't skip it.
+`DartDetector`, and `X501Rules`/`CricketRules` — needs a test written and failing *before* the
+implementation. This is enforced by convention, not tooling; don't skip it.
 
 ## Build environment gotchas (hit and fixed this session)
 
@@ -61,8 +62,8 @@ make lint / format    # ktlint check / autofix
 
 ## Known gaps (don't assume these exist)
 
-- `cv/src/androidTest/assets/fixtures/*.png` (real dartboard photos) are not present — the
-  OpenCV-backed instrumented tests and the perf benchmark will fail on a missing-asset error
-  until someone adds them (`tasks.md` T044).
-- User Stories 2-4 (photo scoring, 501 match, Cricket match) and the Polish phase are specified
-  in `tasks.md` but not implemented.
+- A ground-truth format and automated accuracy-benchmark harness exist
+  (`specs/006-fixture-benchmark/`), but the real dartboard photos themselves are still missing
+  from `cv/src/androidTest/assets/fixtures/` (see the README there) — the OpenCV-backed
+  instrumented tests and the perf benchmark will fail on a missing-asset error until someone with
+  physical board access adds them.
