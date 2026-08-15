@@ -67,5 +67,3 @@ make lint / format    # ktlint check / autofix
 - User Stories 2-4 (photo scoring, 501 match, Cricket match) and the Polish phase are specified
   in `tasks.md` but not implemented.
 - No LICENSE chosen yet.
-- Both `release-drafter` and `release-please` are configured; they overlap (both draft
-  releases/changelogs from merged PRs) — only one should probably stay active long-term.
