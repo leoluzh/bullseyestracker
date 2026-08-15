@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "release-type": "simple",
+  "release-type": "android",
   "packages": {
     ".": {
-      "release-type": "simple",
+      "release-type": "android",
       "package-name": "bullseyestracker",
       "changelog-path": "CHANGELOG.md"
     }
