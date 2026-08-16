@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Dartboard emblem rings, matching DartboardEmblem's proportions, kept inside the
+         adaptive-icon safe zone (a 66dp circle centered in the 108dp canvas). -->
+    <path
+        android:pathData="M82,54 A28,28 0 1,1 26,54 A28,28 0 1,1 82,54 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#E5383B"
+        android:strokeWidth="8.96" />
+    <path
+        android:pathData="M71.36,54 A17.36,17.36 0 1,1 36.64,54 A17.36,17.36 0 1,1 71.36,54 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#2E7D46"
+        android:strokeWidth="7.28" />
+    <path
+        android:pathData="M58.48,54 A4.48,4.48 0 1,1 49.52,54 A4.48,4.48 0 1,1 58.48,54 Z"
+        android:fillColor="#E8B33D" />
+</vector>
