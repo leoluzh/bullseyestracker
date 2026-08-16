@@ -1,5 +1,25 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
+# Labels PRs by conventional-commit-style title prefix so they land in the right category below
+# without manual labeling (spec 011-release-drafter-autolabel). Reuses this repo's existing
+# 'enhancement'/'bug'/'documentation' labels (already wired to Features/Bug Fixes/Documentation)
+# rather than inventing new 'feature'/'fix' labels that don't exist in this repo.
+# .github/labeler.yml's path-based labels (android/cv/match/testing/build/dependencies) are a
+# separate mechanism and are unaffected by this.
+autolabeler:
+  - label: 'enhancement'
+    title:
+      - '/^feat:/i'
+  - label: 'bug'
+    title:
+      - '/^fix:/i'
+  - label: 'documentation'
+    title:
+      - '/^docs:/i'
+  - label: 'chore'
+    title:
+      - '/^chore:/i'
+      - '/^test:/i'
 categories:
   - title: '🚀 Features'
     labels:
