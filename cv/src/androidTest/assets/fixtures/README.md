@@ -1,10 +1,21 @@
 # Dartboard detection fixtures
 
-This directory is empty except for this README. It needs real photos of a physical dartboard —
-capturing them is a manual step (spec `006-fixture-benchmark` Assumptions); nothing in this repo
-can do it for you. Until they're added, `OpenCvBoardDetectorTest`, `OpenCvDartDetectorTest`,
-`PerformanceBenchmarkTest`, and `DetectionAccuracyBenchmarkTest` all fail on a missing-asset error
-— that's expected, not a bug.
+## Current fixtures are synthetic, not real photos
+
+The PNG/JSON pairs currently in this directory are code-rendered (`scripts/generate_synthetic_fixtures.py`),
+not real dartboard photos. They exist to unblock `OpenCvBoardDetectorTest`, `OpenCvDartDetectorTest`,
+and `PerformanceBenchmarkTest` (which otherwise fail on a missing-asset error) and to exercise
+`DetectionAccuracyBenchmarkTest`'s plumbing end-to-end.
+
+**They do not validate real-world detection accuracy.** The renderer draws flat-color wedges and
+solid-circle "darts" against a clean, static background — none of a real camera's lens distortion,
+uneven lighting, glare, motion blur, or perspective skew. A 90%+ score against these fixtures says
+the pipeline's *code* runs correctly, not that it detects darts accurately in the app's hands. Real
+photos of a physical dartboard are still needed for that — capturing them is a manual step (spec
+`006-fixture-benchmark` Assumptions); nothing in this repo can do it for you. Swap in real fixtures
+by following "How to capture and label a fixture" below and overwriting these files (same naming
+scheme); `python scripts/generate_synthetic_fixtures.py` regenerates the synthetic set if you ever
+need it back (e.g. for a build sanity-check unrelated to accuracy).
 
 ## What to add
 

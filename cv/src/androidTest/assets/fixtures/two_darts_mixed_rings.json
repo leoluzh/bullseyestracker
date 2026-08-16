@@ -1,0 +1,14 @@
+{
+  "scenario": "two darts, non-adjacent sectors, single and triple",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": 11,
+      "ring": "SINGLE"
+    },
+    {
+      "sectorNumber": 19,
+      "ring": "TRIPLE"
+    }
+  ]
+}

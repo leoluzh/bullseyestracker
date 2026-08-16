@@ -1,0 +1,14 @@
+{
+  "scenario": "two darts in physically adjacent sectors (20 and 5), ambiguous-boundary case",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": 20,
+      "ring": "SINGLE"
+    },
+    {
+      "sectorNumber": 5,
+      "ring": "SINGLE"
+    }
+  ]
+}

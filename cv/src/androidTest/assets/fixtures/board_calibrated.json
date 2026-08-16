@@ -1,0 +1,5 @@
+{
+  "scenario": "clear well-lit board, no darts",
+  "lighting": "normal",
+  "darts": []
+}

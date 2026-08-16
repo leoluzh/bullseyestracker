@@ -1,0 +1,10 @@
+{
+  "scenario": "single dart dead in the inner bull",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": null,
+      "ring": "INNER_BULL"
+    }
+  ]
+}
