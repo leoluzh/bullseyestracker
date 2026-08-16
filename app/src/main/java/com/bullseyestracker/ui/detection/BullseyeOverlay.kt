@@ -8,10 +8,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.bullseyestracker.cv.BoardCalibration
+import com.bullseyestracker.ui.theme.DartGreen
+import com.bullseyestracker.ui.theme.DartRed
 
-private val OUTER_BULL_COLOR = Color(0xFF2979FF)
-private val INNER_BULL_COLOR = Color(0xFFFF1744)
-private const val STROKE_WIDTH_PX = 4f
+private val HALO_COLOR = Color.White.copy(alpha = 0.9f)
+private const val STROKE_WIDTH_PX = 5f
+private const val HALO_WIDTH_PX = STROKE_WIDTH_PX + 4f
 
 /**
  * Draws the calibrated bullseye's inner/outer boundary as two concentric circle outlines (spec
@@ -33,18 +35,14 @@ fun BullseyeOverlay(
         // back with size.width keeps this overlay in the exact same coordinate space
         // DetectionOverlay's markers and ScoreMapper's hit-testing already assume.
         val radiusScale = size.width
+        val outerRadius = calibration.outerBullRadius * radiusScale
+        val innerRadius = calibration.innerBullRadius * radiusScale
 
-        drawCircle(
-            color = OUTER_BULL_COLOR,
-            radius = calibration.outerBullRadius * radiusScale,
-            center = centerOffset,
-            style = Stroke(width = STROKE_WIDTH_PX),
-        )
-        drawCircle(
-            color = INNER_BULL_COLOR,
-            radius = calibration.innerBullRadius * radiusScale,
-            center = centerOffset,
-            style = Stroke(width = STROKE_WIDTH_PX),
-        )
+        // A white halo behind each colored ring keeps the boundary legible against any camera
+        // background, matching DetectionOverlay's marker-border treatment.
+        drawCircle(color = HALO_COLOR, radius = outerRadius, center = centerOffset, style = Stroke(width = HALO_WIDTH_PX))
+        drawCircle(color = HALO_COLOR, radius = innerRadius, center = centerOffset, style = Stroke(width = HALO_WIDTH_PX))
+        drawCircle(color = DartGreen, radius = outerRadius, center = centerOffset, style = Stroke(width = STROKE_WIDTH_PX))
+        drawCircle(color = DartRed, radius = innerRadius, center = centerOffset, style = Stroke(width = STROKE_WIDTH_PX))
     }
 }
