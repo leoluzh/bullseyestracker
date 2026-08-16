@@ -63,7 +63,9 @@ make lint / format    # ktlint check / autofix
 ## Known gaps (don't assume these exist)
 
 - A ground-truth format and automated accuracy-benchmark harness exist
-  (`specs/006-fixture-benchmark/`), but the real dartboard photos themselves are still missing
-  from `cv/src/androidTest/assets/fixtures/` (see the README there) — the OpenCV-backed
-  instrumented tests and the perf benchmark will fail on a missing-asset error until someone with
-  physical board access adds them.
+  (`specs/006-fixture-benchmark/`), and `cv/src/androidTest/assets/fixtures/` is populated —
+  but only with **synthetic**, code-rendered fixtures (`scripts/generate_synthetic_fixtures.py`),
+  not real dartboard photos. They unblock the OpenCV-backed instrumented tests and the perf
+  benchmark (no more missing-asset failures), but `DetectionAccuracyBenchmarkTest` passing
+  against them says nothing about real-world detection accuracy — see the README in that
+  directory. Real photos still need someone with physical board access.

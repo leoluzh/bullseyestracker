@@ -1,0 +1,10 @@
+{
+  "scenario": "single dart missing the board entirely",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": null,
+      "ring": "MISS"
+    }
+  ]
+}

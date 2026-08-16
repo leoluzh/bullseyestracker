@@ -1,0 +1,18 @@
+{
+  "scenario": "three darts across different sectors and rings, dim lighting",
+  "lighting": "dim",
+  "darts": [
+    {
+      "sectorNumber": 20,
+      "ring": "TRIPLE"
+    },
+    {
+      "sectorNumber": 5,
+      "ring": "SINGLE"
+    },
+    {
+      "sectorNumber": null,
+      "ring": "INNER_BULL"
+    }
+  ]
+}

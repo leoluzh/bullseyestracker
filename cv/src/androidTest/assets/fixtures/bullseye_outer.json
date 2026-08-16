@@ -1,0 +1,10 @@
+{
+  "scenario": "single dart in the outer bull",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": null,
+      "ring": "OUTER_BULL"
+    }
+  ]
+}

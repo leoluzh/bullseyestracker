@@ -1,0 +1,10 @@
+{
+  "scenario": "single dart on triple 3",
+  "lighting": "normal",
+  "darts": [
+    {
+      "sectorNumber": 3,
+      "ring": "TRIPLE"
+    }
+  ]
+}
