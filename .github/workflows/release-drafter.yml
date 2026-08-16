@@ -17,6 +17,15 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: release-drafter/release-drafter@v7
+      - id: release_drafter
+        uses: release-drafter/release-drafter@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Only publish on an actual merge to master (push event), not on the
+      # pull_request-triggered runs that just refresh the draft preview.
+      - name: Publish release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit ${{ steps.release_drafter.outputs.tag_name }} --draft=false --repo ${{ github.repository }}
