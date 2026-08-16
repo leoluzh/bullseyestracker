@@ -1,7 +1,9 @@
 package com.bullseyestracker.ui.detection
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -12,12 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bullseyestracker.cv.DetectedThrow
+import com.bullseyestracker.ui.theme.DartGold
+import com.bullseyestracker.ui.theme.DartGreen
 
 private const val LOW_CONFIDENCE_THRESHOLD = 0.4f
 private val MARKER_SIZE = 32.dp
@@ -40,16 +45,19 @@ fun DetectionOverlay(
 
         detections.forEach { detection ->
             val isLowConfidence = detection.confidence < LOW_CONFIDENCE_THRESHOLD
+            val markerColor = if (isLowConfidence) DartGold else DartGreen
             val xDp = with(density) { (detection.boardPositionX * widthPx).toDp() } - (MARKER_SIZE / 2)
             val yDp = with(density) { (detection.boardPositionY * heightPx).toDp() } - (MARKER_SIZE / 2)
 
-            androidx.compose.foundation.layout.Box(
+            Box(
                 modifier =
                     Modifier
                         .offset(x = xDp, y = yDp)
                         .size(MARKER_SIZE)
+                        .shadow(elevation = 4.dp, shape = CircleShape)
                         .clip(CircleShape)
-                        .background(if (isLowConfidence) Color(0xCCFFC107) else Color(0xCC00E676))
+                        .background(markerColor.copy(alpha = 0.92f))
+                        .border(width = 2.dp, color = Color.White, shape = CircleShape)
                         .clickable { onDetectionTapped(detection) },
                 contentAlignment = Alignment.Center,
             ) {
