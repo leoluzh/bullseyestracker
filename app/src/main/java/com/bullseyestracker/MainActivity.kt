@@ -40,12 +40,16 @@ import com.bullseyestracker.ui.match.FiveOOneScoreboardScreen
 import com.bullseyestracker.ui.match.MatchSetupScreen
 import com.bullseyestracker.ui.match.MatchViewModel
 import com.bullseyestracker.ui.match.MatchViewModelFactory
+import com.bullseyestracker.ui.stats.PlayerStatsScreen
+import com.bullseyestracker.ui.stats.PlayerStatsViewModel
+import com.bullseyestracker.ui.stats.PlayerStatsViewModelFactory
 import com.bullseyestracker.ui.theme.BullseyesTrackerTheme
 
 /**
- * Start-screen navigation state (spec 005-match-history User Story 2). Only reachable when no
- * match is in-progress — an in-progress/resumed match always takes over the UI via
- * [MatchViewModel.match] regardless of this state (spec FR-001-003, unaffected by this feature).
+ * Start-screen navigation state (spec 005-match-history User Story 2, extended by
+ * spec 010-player-stats). Only reachable when no match is in-progress — an in-progress/resumed
+ * match always takes over the UI via [MatchViewModel.match] regardless of this state (spec
+ * FR-001-003, unaffected by this feature).
  */
 private sealed class AppScreen {
     data object Setup : AppScreen()
@@ -55,6 +59,8 @@ private sealed class AppScreen {
     data class HistoryDetail(
         val matchId: String,
     ) : AppScreen()
+
+    data object Stats : AppScreen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -88,6 +94,8 @@ class MainActivity : ComponentActivity() {
                 viewModel(factory = MatchViewModelFactory(appContainer.matchRepository))
             val historyViewModel: HistoryViewModel =
                 viewModel(factory = HistoryViewModelFactory(appContainer.matchRepository))
+            val playerStatsViewModel: PlayerStatsViewModel =
+                viewModel(factory = PlayerStatsViewModelFactory(appContainer.matchRepository))
             val match by matchViewModel.match.collectAsState()
 
             BullseyesTrackerTheme {
@@ -100,6 +108,9 @@ class MainActivity : ComponentActivity() {
                                     Column(modifier = Modifier.fillMaxSize()) {
                                         Button(onClick = { screen = AppScreen.History }) {
                                             Text("Match history")
+                                        }
+                                        Button(onClick = { screen = AppScreen.Stats }) {
+                                            Text("Player stats")
                                         }
                                         MatchSetupScreen(onStartMatch = matchViewModel::startMatch)
                                     }
@@ -124,6 +135,11 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
+                                AppScreen.Stats ->
+                                    PlayerStatsScreen(
+                                        viewModel = playerStatsViewModel,
+                                        onBack = { screen = AppScreen.Setup },
+                                    )
                             }
                         } else {
                             Column(modifier = Modifier.fillMaxSize()) {
