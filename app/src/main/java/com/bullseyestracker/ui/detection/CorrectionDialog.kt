@@ -1,11 +1,18 @@
 package com.bullseyestracker.ui.detection
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -13,7 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.bullseyestracker.cv.DetectedThrow
 import com.bullseyestracker.cv.Ring
 import com.bullseyestracker.cv.ScoreCalculator
@@ -36,9 +47,9 @@ fun CorrectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Correct throw") },
+        title = { Text("Correct throw", fontWeight = FontWeight.Bold) },
         text = {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 RingPicker(selected = ring, onSelected = { ring = it })
                 if (sectorApplies) {
                     SectorPicker(selected = sectorNumber, onSelected = { sectorNumber = it })
@@ -56,12 +67,57 @@ fun CorrectionDialog(
                         confidence = 1f,
                     ),
                 )
-            }) { Text("Save") }
+            }) { Text("Save", fontWeight = FontWeight.Bold) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
         },
     )
+}
+
+private fun Ring.displayName(): String =
+    when (this) {
+        Ring.SINGLE -> "Single"
+        Ring.DOUBLE -> "Double"
+        Ring.TRIPLE -> "Treble"
+        Ring.OUTER_BULL -> "Outer Bull"
+        Ring.INNER_BULL -> "Bullseye"
+        Ring.MISS -> "Miss"
+    }
+
+@Composable
+private fun PickerField(
+    label: String,
+    value: String,
+    onClick: () -> Unit,
+) {
+    Column {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable(onClick = onClick)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                value,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text("⌄", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
 }
 
 @Composable
@@ -70,22 +126,18 @@ private fun SectorPicker(
     onSelected: (Int) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Row {
-        Text("Sector: ", modifier = Modifier)
-        Text(
-            text = selected.toString(),
-            modifier = Modifier.clickable { expanded = true },
-        )
-    }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        (1..20).forEach { number ->
-            DropdownMenuItem(
-                text = { Text(number.toString()) },
-                onClick = {
-                    onSelected(number)
-                    expanded = false
-                },
-            )
+    Box {
+        PickerField(label = "Sector", value = selected.toString(), onClick = { expanded = true })
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            (1..20).forEach { number ->
+                DropdownMenuItem(
+                    text = { Text(number.toString()) },
+                    onClick = {
+                        onSelected(number)
+                        expanded = false
+                    },
+                )
+            }
         }
     }
 }
@@ -96,22 +148,18 @@ private fun RingPicker(
     onSelected: (Ring) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Row {
-        Text("Ring: ")
-        Text(
-            text = selected.name,
-            modifier = Modifier.clickable { expanded = true },
-        )
-    }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-        Ring.values().forEach { r ->
-            DropdownMenuItem(
-                text = { Text(r.name) },
-                onClick = {
-                    onSelected(r)
-                    expanded = false
-                },
-            )
+    Box {
+        PickerField(label = "Ring", value = selected.displayName(), onClick = { expanded = true })
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            Ring.entries.forEach { r ->
+                DropdownMenuItem(
+                    text = { Text(r.displayName()) },
+                    onClick = {
+                        onSelected(r)
+                        expanded = false
+                    },
+                )
+            }
         }
     }
 }
