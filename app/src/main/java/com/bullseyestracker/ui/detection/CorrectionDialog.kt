@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +63,7 @@ fun CorrectionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = {
+            Button(onClick = {
                 val effectiveSector = if (sectorApplies) sectorNumber else null
                 onConfirm(
                     initial.copy(
