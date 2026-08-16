@@ -50,4 +50,8 @@ interface MatchDao {
 
     @Query("SELECT COUNT(*) FROM turns WHERE matchId = :matchId")
     suspend fun getTurnCount(matchId: String): Int
+
+    /** Players/turns/throws cascade-delete via their `matchId`/`turnId` foreign keys (ON DELETE CASCADE). */
+    @Query("DELETE FROM matches WHERE id = :matchId")
+    suspend fun deleteMatch(matchId: String)
 }

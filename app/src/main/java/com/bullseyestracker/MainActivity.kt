@@ -10,16 +10,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -184,11 +190,53 @@ class MainActivity : ComponentActivity() {
                                     )
                             }
                         } else {
+                            var showAbandonConfirm by remember { mutableStateOf(false) }
+
                             Column(modifier = Modifier.fillMaxSize()) {
+                                TextButton(
+                                    onClick = {
+                                        if (currentMatch.status == MatchStatus.COMPLETED) {
+                                            matchViewModel.startNewMatch()
+                                            screen = AppScreen.Home
+                                        } else {
+                                            showAbandonConfirm = true
+                                        }
+                                    },
+                                    modifier = Modifier.align(Alignment.Start),
+                                ) {
+                                    Text("‹ Home", style = MaterialTheme.typography.bodyLarge)
+                                }
                                 when (currentMatch.gameMode) {
                                     GameMode.FIVE_O_ONE -> FiveOOneScoreboardScreen(match = currentMatch)
                                     GameMode.CRICKET -> CricketScoreboardScreen(match = currentMatch)
                                 }
+
+                                if (showAbandonConfirm) {
+                                    AlertDialog(
+                                        onDismissRequest = { showAbandonConfirm = false },
+                                        title = { Text("Abandon match?", fontWeight = FontWeight.Bold) },
+                                        text = {
+                                            Text(
+                                                "This match is still in progress. Leaving now discards it — " +
+                                                    "it won't be saved to match history.",
+                                            )
+                                        },
+                                        confirmButton = {
+                                            Button(
+                                                onClick = {
+                                                    matchViewModel.abandonMatch()
+                                                    showAbandonConfirm = false
+                                                    screen = AppScreen.Home
+                                                },
+                                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                                            ) { Text("Abandon") }
+                                        },
+                                        dismissButton = {
+                                            TextButton(onClick = { showAbandonConfirm = false }) { Text("Keep playing") }
+                                        },
+                                    )
+                                }
+
                                 if (currentMatch.status == MatchStatus.COMPLETED) {
                                     Button(onClick = { matchViewModel.startNewMatch() }) {
                                         Text("New match")
