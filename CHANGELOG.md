@@ -24,6 +24,7 @@ once a first tagged release exists.
   `gradle/wrapper/gradle-wrapper.jar`).
 - `CvNativeInit` (`cv` module) and `MatchRepository.create()` (`match` module) so the `app`
   module never touches OpenCV or Room types directly, per constitution Principle II.
+- Auto-update CHANGELOG.md and auto-publish releases on merge ([#57](https://github.com/leoluzh/bullseyestracker/pull/57)).
 
 ### Fixed
 
