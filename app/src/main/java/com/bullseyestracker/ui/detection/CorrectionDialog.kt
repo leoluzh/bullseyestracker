@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -28,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.bullseyestracker.cv.DetectedThrow
 import com.bullseyestracker.cv.Ring
 import com.bullseyestracker.cv.ScoreCalculator
+import com.bullseyestracker.ui.theme.DartRed
 
 /**
  * Lets the player correct a detected throw's sector/ring before it's committed to a match
@@ -47,7 +52,7 @@ fun CorrectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Correct throw", fontWeight = FontWeight.Bold) },
+        title = { CorrectionDialogTitle(detectedValue = initial.value) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 RingPicker(selected = ring, onSelected = { ring = it })
@@ -73,6 +78,27 @@ fun CorrectionDialog(
             TextButton(onClick = onDismiss) { Text("Cancel") }
         },
     )
+}
+
+@Composable
+private fun CorrectionDialogTitle(detectedValue: Int) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.size(10.dp).background(DartRed, CircleShape))
+        Spacer(Modifier.width(10.dp))
+        Column {
+            Text(
+                "Correct throw",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                "Detected as $detectedValue pts",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
 }
 
 private fun Ring.displayName(): String =
