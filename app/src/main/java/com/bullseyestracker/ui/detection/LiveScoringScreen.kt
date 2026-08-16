@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bullseyestracker.camera.CameraController
 import com.bullseyestracker.camera.LiveDetectionAnalyzer
+import com.bullseyestracker.cv.BoardCalibration
 import com.bullseyestracker.cv.CvEngine
 import com.bullseyestracker.cv.DetectedThrow
 
@@ -39,13 +40,15 @@ fun LiveScoringScreen(
     var boardStatus by remember { mutableStateOf("Point the camera at the board…") }
     var currentThrows by remember { mutableStateOf(listOf<DetectedThrow>()) }
     var correctingIndex by remember { mutableStateOf(-1) }
+    var calibration by remember { mutableStateOf<BoardCalibration?>(null) }
 
     val cameraController = remember { CameraController(context) }
     val analyzer =
         remember {
             LiveDetectionAnalyzer(
                 cvEngine = cvEngine,
-                onCalibrated = { _, confidence ->
+                onCalibrated = { newCalibration, confidence ->
+                    calibration = newCalibration
                     boardStatus =
                         if (confidence < 0.5f) {
                             "Board found (low confidence) — hold steady"
@@ -54,6 +57,7 @@ fun LiveScoringScreen(
                         }
                 },
                 onBoardNotFound = {
+                    calibration = null
                     boardStatus = "No dartboard found — point the camera at the board"
                 },
                 onDetections = { detections ->
@@ -73,6 +77,8 @@ fun LiveScoringScreen(
                 }
             },
         )
+
+        BullseyeOverlay(calibration = calibration, modifier = Modifier.fillMaxSize())
 
         DetectionOverlay(
             detections = currentThrows,
