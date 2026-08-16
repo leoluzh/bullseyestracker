@@ -11,16 +11,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,34 +25,28 @@ private const val MIN_PLAYERS = 2
 private const val MAX_PLAYERS = 4
 
 /**
- * Match setup (spec 003-501-match / 004-cricket-match User Story 1): choose 501 or Cricket and
- * collect 2-4 player names, blocking "Start match" outside that range (FR-001, Acceptance
- * Scenario 2). Cricket only requires a 2-player minimum in principle (004 spec Assumptions), but
- * the shared `Match` model caps every mode at 4 players, so both modes use the same bounds here.
+ * Match setup (spec 003-501-match / 004-cricket-match User Story 1, mode selection moved to
+ * [com.bullseyestracker.ui.home.GameModeListScreen] by spec 013-app-home-navigation): collect
+ * 2-4 player names for the already-chosen [gameMode], blocking "Start match" outside that range
+ * (FR-001, Acceptance Scenario 2). Cricket only requires a 2-player minimum in principle (004
+ * spec Assumptions), but the shared `Match` model caps every mode at 4 players, so both modes use
+ * the same bounds here.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MatchSetupScreen(onStartMatch: (GameMode, List<String>) -> Unit) {
-    var gameMode by remember { mutableStateOf(GameMode.FIVE_O_ONE) }
+fun MatchSetupScreen(
+    gameMode: GameMode,
+    onStartMatch: (GameMode, List<String>) -> Unit,
+    onBack: () -> Unit,
+) {
     val playerNames = remember { mutableStateListOf("", "") }
 
     val trimmedNames = playerNames.map { it.trim() }
     val canStart = trimmedNames.size in MIN_PLAYERS..MAX_PLAYERS && trimmedNames.all { it.isNotEmpty() }
 
     Column(modifier = Modifier.padding(16.dp)) {
+        Button(onClick = onBack) { Text("Back") }
         Text(if (gameMode == GameMode.FIVE_O_ONE) "New 501 match" else "New Cricket match")
-
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.padding(vertical = 8.dp)) {
-            GameMode.entries.forEachIndexed { index, mode ->
-                SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(index = index, count = GameMode.entries.size),
-                    selected = gameMode == mode,
-                    onClick = { gameMode = mode },
-                ) {
-                    Text(if (mode == GameMode.FIVE_O_ONE) "501" else "Cricket")
-                }
-            }
-        }
 
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(playerNames.size) { index ->
