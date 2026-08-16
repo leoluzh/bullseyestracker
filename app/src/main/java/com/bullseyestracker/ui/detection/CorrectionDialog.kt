@@ -130,8 +130,9 @@ private fun SectorPicker(
         PickerField(label = "Sector", value = selected.toString(), onClick = { expanded = true })
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             (1..20).forEach { number ->
-                DropdownMenuItem(
-                    text = { Text(number.toString()) },
+                PickerMenuItem(
+                    label = number.toString(),
+                    isSelected = number == selected,
                     onClick = {
                         onSelected(number)
                         expanded = false
@@ -152,8 +153,9 @@ private fun RingPicker(
         PickerField(label = "Ring", value = selected.displayName(), onClick = { expanded = true })
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             Ring.entries.forEach { r ->
-                DropdownMenuItem(
-                    text = { Text(r.displayName()) },
+                PickerMenuItem(
+                    label = r.displayName(),
+                    isSelected = r == selected,
                     onClick = {
                         onSelected(r)
                         expanded = false
@@ -162,4 +164,28 @@ private fun RingPicker(
             }
         }
     }
+}
+
+@Composable
+private fun PickerMenuItem(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = {
+            Text(
+                label,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            )
+        },
+        trailingIcon =
+            if (isSelected) {
+                { Text("✓", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) }
+            } else {
+                null
+            },
+        onClick = onClick,
+    )
 }
