@@ -3,19 +3,31 @@ package com.bullseyestracker.ui.detection
 import android.graphics.Bitmap
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +40,11 @@ import com.bullseyestracker.cv.BoardCalibrationResult
 import com.bullseyestracker.cv.CvEngine
 import com.bullseyestracker.cv.DetectedThrow
 import com.bullseyestracker.cv.FrameInput
+import com.bullseyestracker.ui.theme.DartGold
+import com.bullseyestracker.ui.theme.DartGreen
+import com.bullseyestracker.ui.theme.DartRed
+
+private val SCRIM = Color.Black.copy(alpha = 0.55f)
 
 /**
  * User Story 2: take one photo of the board instead of scoring live; every dart in that photo
@@ -45,6 +62,7 @@ fun PhotoScoringScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var status by remember { mutableStateOf("Point the camera at the board, then take a photo") }
+    var statusAccent by remember { mutableStateOf(DartGold) }
     var capturedPhoto by remember { mutableStateOf<Bitmap?>(null) }
     var currentThrows by remember { mutableStateOf(listOf<DetectedThrow>()) }
     var correctingIndex by remember { mutableStateOf(-1) }
@@ -57,6 +75,7 @@ fun PhotoScoringScreen(
         currentThrows = emptyList()
         photoCalibration = null
         status = "Point the camera at the board, then take a photo"
+        statusAccent = DartGold
     }
 
     fun scorePhoto(photo: Bitmap) {
@@ -65,16 +84,18 @@ fun PhotoScoringScreen(
             is BoardCalibrationResult.Calibrated -> {
                 photoCalibration = calibrationResult.calibration
                 currentThrows = cvEngine.detectThrows(frame, calibrationResult.calibration)
-                status =
-                    if (currentThrows.isEmpty()) {
-                        "No darts found in the photo"
-                    } else {
-                        "Found ${currentThrows.size} dart(s) — review and confirm"
-                    }
+                if (currentThrows.isEmpty()) {
+                    status = "No darts found in the photo"
+                    statusAccent = DartRed
+                } else {
+                    status = "Found ${currentThrows.size} dart(s) — review and confirm"
+                    statusAccent = DartGreen
+                }
             }
             BoardCalibrationResult.NotFound -> {
                 photoCalibration = null
                 status = "No dartboard found in the photo — retake with the board in frame"
+                statusAccent = DartRed
             }
         }
     }
@@ -106,31 +127,61 @@ fun PhotoScoringScreen(
             )
         }
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(status)
-            if (photo != null) {
-                Text("Darts: ${currentThrows.size}/3 — total ${currentThrows.sumOf { it.value }}")
-            }
-            Row {
+        Surface(
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+            color = SCRIM,
+        ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier.size(10.dp).background(statusAccent, CircleShape))
+                    Text(
+                        status,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 10.dp),
+                    )
+                }
+                if (photo != null) {
+                    Text(
+                        "Darts: ${currentThrows.size}/3 — total ${currentThrows.sumOf { it.value }}",
+                        color = Color.White.copy(alpha = 0.85f),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
                 if (photo == null) {
-                    Button(onClick = {
-                        captureController.capturePhoto(
-                            onCaptured = { bitmap ->
-                                capturedPhoto = bitmap
-                                scorePhoto(bitmap)
-                            },
-                            onError = { status = "Photo capture failed — try again" },
-                        )
-                    }) { Text("Take photo") }
-                } else {
-                    Button(onClick = { retake() }) { Text("Retake") }
                     Button(
                         onClick = {
-                            onTurnConfirmed(currentThrows)
-                            retake()
+                            captureController.capturePhoto(
+                                onCaptured = { bitmap ->
+                                    capturedPhoto = bitmap
+                                    scorePhoto(bitmap)
+                                },
+                                onError = {
+                                    status = "Photo capture failed — try again"
+                                    statusAccent = DartRed
+                                },
+                            )
                         },
-                        enabled = currentThrows.isNotEmpty(),
-                    ) { Text("Confirm turn") }
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    ) { Text("Take photo") }
+                } else {
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
+                        OutlinedButton(
+                            onClick = { retake() },
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                            modifier = Modifier.weight(1f),
+                        ) { Text("Retake") }
+                        Spacer(Modifier.width(12.dp))
+                        Button(
+                            onClick = {
+                                onTurnConfirmed(currentThrows)
+                                retake()
+                            },
+                            enabled = currentThrows.isNotEmpty(),
+                            modifier = Modifier.weight(1f),
+                        ) { Text("Confirm turn") }
+                    }
                 }
             }
         }
