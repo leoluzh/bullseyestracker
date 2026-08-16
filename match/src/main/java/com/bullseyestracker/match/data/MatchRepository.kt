@@ -102,6 +102,12 @@ class MatchRepository(
         )
     }
 
+    /** Discards an in-progress match entirely (not surfaced in history) so the player can back
+     * out to the home screen without finishing it. */
+    suspend fun abandonMatch(matchId: String) {
+        dao.deleteMatch(matchId)
+    }
+
     suspend fun saveDetectionFrame(frame: DetectionFrame) {
         dao.insertDetectionFrame(
             DetectionFrameEntity(

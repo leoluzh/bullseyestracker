@@ -62,6 +62,17 @@ class MatchViewModel(
         _match.value = null
     }
 
+    /** Discards the in-progress match (not saved to history) so the player can leave to the
+     * home screen without finishing it. No-op if there's no match, or it's already completed. */
+    fun abandonMatch() {
+        val currentMatch = _match.value ?: return
+        if (currentMatch.status == MatchStatus.COMPLETED) return
+        viewModelScope.launch {
+            matchRepository.abandonMatch(currentMatch.id)
+            _match.value = null
+        }
+    }
+
     fun confirmTurn(detectedThrows: List<DetectedThrow>) {
         val currentMatch = _match.value ?: return
         if (currentMatch.status == MatchStatus.COMPLETED) return // FR-008/FR-010
