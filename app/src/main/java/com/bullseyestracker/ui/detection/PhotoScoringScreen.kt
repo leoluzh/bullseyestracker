@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bullseyestracker.camera.PhotoCaptureController
+import com.bullseyestracker.cv.BoardCalibration
 import com.bullseyestracker.cv.BoardCalibrationResult
 import com.bullseyestracker.cv.CvEngine
 import com.bullseyestracker.cv.DetectedThrow
@@ -47,12 +48,14 @@ fun PhotoScoringScreen(
     var capturedPhoto by remember { mutableStateOf<Bitmap?>(null) }
     var currentThrows by remember { mutableStateOf(listOf<DetectedThrow>()) }
     var correctingIndex by remember { mutableStateOf(-1) }
+    var photoCalibration by remember { mutableStateOf<BoardCalibration?>(null) }
 
     val captureController = remember { PhotoCaptureController(context) }
 
     fun retake() {
         capturedPhoto = null
         currentThrows = emptyList()
+        photoCalibration = null
         status = "Point the camera at the board, then take a photo"
     }
 
@@ -60,6 +63,7 @@ fun PhotoScoringScreen(
         val frame = FrameInput(bitmap = photo)
         when (val calibrationResult = cvEngine.calibrateBoard(frame)) {
             is BoardCalibrationResult.Calibrated -> {
+                photoCalibration = calibrationResult.calibration
                 currentThrows = cvEngine.detectThrows(frame, calibrationResult.calibration)
                 status =
                     if (currentThrows.isEmpty()) {
@@ -69,6 +73,7 @@ fun PhotoScoringScreen(
                     }
             }
             BoardCalibrationResult.NotFound -> {
+                photoCalibration = null
                 status = "No dartboard found in the photo — retake with the board in frame"
             }
         }
@@ -93,6 +98,7 @@ fun PhotoScoringScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )
+            BullseyeOverlay(calibration = photoCalibration, modifier = Modifier.fillMaxSize())
             DetectionOverlay(
                 detections = currentThrows,
                 modifier = Modifier.fillMaxSize(),
