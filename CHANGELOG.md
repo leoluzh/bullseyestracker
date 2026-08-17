@@ -9,6 +9,42 @@ Starting with the next release, entries below this line are generated automatica
 [release-please](https://github.com/googleapis/release-please) from conventional-commit PR
 titles on every merge to `master` — do not hand-edit past this point.
 
+## [0.2.0](https://github.com/leoluzh/bullseyestracker/compare/bullseyestracker-v0.1.1...bullseyestracker-v0.2.0) (2026-08-17)
+
+
+### Features
+
+* add a real app launcher icon ([#56](https://github.com/leoluzh/bullseyestracker/issues/56)) ([3ef56af](https://github.com/leoluzh/bullseyestracker/commit/3ef56afebfeee670cb53bb29c899b7c6022ba745))
+* add a way back to Home from the active match screen ([#55](https://github.com/leoluzh/bullseyestracker/issues/55)) ([1b0bdbc](https://github.com/leoluzh/bullseyestracker/commit/1b0bdbc1209cbe558c36c9e3b5a580850c93012f))
+* add dependency-install scripts for Linux and Windows ([9c95001](https://github.com/leoluzh/bullseyestracker/commit/9c95001a35657e648f193ed31ee948241d1fc9e1))
+* add home screen, splash, game-mode list, and calibrator test screen (spec 013-app-home-navigation) ([#39](https://github.com/leoluzh/bullseyestracker/issues/39)) ([67e2f74](https://github.com/leoluzh/bullseyestracker/commit/67e2f74d357f64e0532831bb59885e8c8a8c2db5))
+* add match history and confirm resume-on-launch (spec 005-match-history) ([e46fff3](https://github.com/leoluzh/bullseyestracker/commit/e46fff349267536d13881b2356eed07f0a6eef33))
+* add player statistics screen with win rate (spec 010-player-stats) ([#36](https://github.com/leoluzh/bullseyestracker/issues/36)) ([f7e21be](https://github.com/leoluzh/bullseyestracker/commit/f7e21be4709a4aa57c87c92f819d1f4d0c9c9462))
+* auto-update CHANGELOG.md and auto-publish releases on merge ([#57](https://github.com/leoluzh/bullseyestracker/issues/57)) ([5bea51f](https://github.com/leoluzh/bullseyestracker/commit/5bea51f2cd11496de7d6d5c15df8b3cfa1a26ae3))
+* draw bullseye calibration boundary overlay (spec 012-bullseye-overlay) ([#38](https://github.com/leoluzh/bullseyestracker/issues/38)) ([f463aac](https://github.com/leoluzh/bullseyestracker/commit/f463aacc9e9c44449964aa6b0c231a7e44f30ed4))
+* implement 501 match scoring (spec 003-501-match) ([da39135](https://github.com/leoluzh/bullseyestracker/commit/da3913554514f289541f4f51448d931980b0ee72))
+* implement 501 match scoring (US3) ([6ba5c8f](https://github.com/leoluzh/bullseyestracker/commit/6ba5c8fb4c52667257146adf115e90d19e5e34b0))
+* implement Cricket match scoring (US4) ([acdb48b](https://github.com/leoluzh/bullseyestracker/commit/acdb48b868e044c2d0d9674382c682af49c0883a))
+* implement Cricket match scoring (US4) ([70e603d](https://github.com/leoluzh/bullseyestracker/commit/70e603d2f5bda0209daacfe21669607267f59ae2))
+* implement MVP (Setup + Foundational + US1 live-camera scoring) ([17c7ac8](https://github.com/leoluzh/bullseyestracker/commit/17c7ac8b47eb47fc8eedfaf65461e2e438a2ffdc))
+* implement US2 photo-based dart scoring ([60c96f4](https://github.com/leoluzh/bullseyestracker/commit/60c96f4be4492ad919e2f8f38aad10d7b46e7fb0))
+* initialize spec-kit project and dart-scoring feature spec ([222fe63](https://github.com/leoluzh/bullseyestracker/commit/222fe63400d3f3c09c3ae707ba44d0bfed95853a))
+* swap release-drafter + custom changelog script for release-please ([#58](https://github.com/leoluzh/bullseyestracker/issues/58)) ([2753437](https://github.com/leoluzh/bullseyestracker/commit/2753437480e186b2e4afa8f5bdb83a9c90a2c81a))
+* US2 photo-based dart scoring ([a2f06cb](https://github.com/leoluzh/bullseyestracker/commit/a2f06cb561aa0d695ff5edf21724b15d10e3c631))
+
+
+### Bug Fixes
+
+* autolabel PRs by title prefix for release-drafter categorization (spec 011-release-drafter-autolabel) ([#37](https://github.com/leoluzh/bullseyestracker/issues/37)) ([2ddf87b](https://github.com/leoluzh/bullseyestracker/commit/2ddf87b8ba3126941457c7e4e2535d1865bd1bd5))
+* bump CameraX to 1.4.2 for 16 KB page size support ([315cb0d](https://github.com/leoluzh/bullseyestracker/commit/315cb0d7785a53f657cf1ef1e23640b359d0c94b))
+* bump CameraX to 1.4.2 for 16 KB page size support ([e672527](https://github.com/leoluzh/bullseyestracker/commit/e672527f85d14bdf0df75ea50299208e2b422e2e))
+* bump compileSdk/targetSdk to 37, reformat for ktlint 14.2.0 ([d4c7129](https://github.com/leoluzh/bullseyestracker/commit/d4c7129dc622ac87742026171c2d7db3c91815b6))
+* close spec-analysis gaps in dart-scoring plan ([2345886](https://github.com/leoluzh/bullseyestracker/commit/2345886ecf9a7b42158cc10f593ed66d00d6e285))
+* make gradlew executable in CI ([79e5c58](https://github.com/leoluzh/bullseyestracker/commit/79e5c582501571b7c7af39c5517bad60b0978194))
+* make the project actually build and pass its unit tests ([0633ba1](https://github.com/leoluzh/bullseyestracker/commit/0633ba1f835466077349aff1edcf9a98d9fd0d80))
+* repair master build after Dependabot AGP 9 / OpenCV 5 bumps ([11e6982](https://github.com/leoluzh/bullseyestracker/commit/11e69829e5372b3b74914afa028cb4417b58a417))
+* repair master build after Dependabot AGP 9 / OpenCV 5 bumps ([c940fc9](https://github.com/leoluzh/bullseyestracker/commit/c940fc9e3b91d52929a605b7ca89e23e73c25e4c))
+
 ## [Unreleased]
 
 ### Added
