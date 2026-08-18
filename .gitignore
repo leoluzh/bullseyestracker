@@ -2,6 +2,9 @@
 .idea/
 *.iml
 
+# Python venvs (tooling, e.g. Label Studio)
+.venv*/
+
 # Android / Gradle (for when the app module is added)
 *.apk
 *.aab
