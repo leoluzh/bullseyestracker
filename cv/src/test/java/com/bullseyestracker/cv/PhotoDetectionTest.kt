@@ -48,8 +48,8 @@ class PhotoDetectionTest {
 
     private fun engine() =
         CvEngineImpl(
-            boardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.9f)),
-            dartDetector = FakeDartDetector(rawDetections),
+            classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.9f)),
+            classicalDartDetector = FakeDartDetector(rawDetections),
             scoreMapper = ScoreMapper(),
         )
 

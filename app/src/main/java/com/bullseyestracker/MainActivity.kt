@@ -51,6 +51,7 @@ import com.bullseyestracker.ui.match.FiveOOneScoreboardScreen
 import com.bullseyestracker.ui.match.MatchSetupScreen
 import com.bullseyestracker.ui.match.MatchViewModel
 import com.bullseyestracker.ui.match.MatchViewModelFactory
+import com.bullseyestracker.ui.settings.SettingsScreen
 import com.bullseyestracker.ui.stats.PlayerStatsScreen
 import com.bullseyestracker.ui.stats.PlayerStatsViewModel
 import com.bullseyestracker.ui.stats.PlayerStatsViewModelFactory
@@ -89,6 +90,8 @@ private sealed class AppScreen {
     data object Stats : AppScreen()
 
     data object CalibrationTest : AppScreen()
+
+    data object Settings : AppScreen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -118,6 +121,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             var captureMode by remember { mutableStateOf(CaptureMode.LIVE_CAMERA) }
             var screen by remember { mutableStateOf<AppScreen>(AppScreen.Splash) }
+            var detectionBackend by remember { mutableStateOf(appContainer.cvEngine.detectionBackend) }
             val matchViewModel: MatchViewModel =
                 viewModel(factory = MatchViewModelFactory(appContainer.matchRepository))
             val historyViewModel: HistoryViewModel =
@@ -145,6 +149,7 @@ class MainActivity : ComponentActivity() {
                                         onMatchHistory = { screen = AppScreen.History },
                                         onPlayerStats = { screen = AppScreen.Stats },
                                         onTestCalibrator = { screen = AppScreen.CalibrationTest },
+                                        onSettings = { screen = AppScreen.Settings },
                                     )
                                 AppScreen.GameModeList ->
                                     GameModeListScreen(
@@ -186,6 +191,17 @@ class MainActivity : ComponentActivity() {
                                 AppScreen.CalibrationTest ->
                                     CalibrationTestScreen(
                                         cvEngine = appContainer.cvEngine,
+                                        onBack = { screen = AppScreen.Home },
+                                    )
+                                AppScreen.Settings ->
+                                    SettingsScreen(
+                                        selectedBackend = detectionBackend,
+                                        isDnnAvailable = appContainer.isDnnAvailable,
+                                        onBackendSelected = { backend ->
+                                            appContainer.cvEngine.detectionBackend = backend
+                                            appContainer.detectionBackendSetting.set(backend)
+                                            detectionBackend = backend
+                                        },
                                         onBack = { screen = AppScreen.Home },
                                     )
                             }
