@@ -47,8 +47,8 @@ class CvEngineContractTest {
     fun `detectThrows returns empty list, not an error, when no darts are found`() {
         val engine =
             CvEngineImpl(
-                boardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
-                dartDetector = FakeDartDetector(emptyList()),
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
+                classicalDartDetector = FakeDartDetector(emptyList()),
                 scoreMapper = ScoreMapper(),
             )
 
@@ -61,8 +61,8 @@ class CvEngineContractTest {
     fun `every detected throw carries confidence and its normalized board position`() {
         val engine =
             CvEngineImpl(
-                boardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.9f)),
-                dartDetector =
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.9f)),
+                classicalDartDetector =
                     FakeDartDetector(
                         listOf(RawDartDetection(positionX = 0.5f, positionY = 0.2f, confidence = 0.75f)),
                     ),
@@ -82,11 +82,62 @@ class CvEngineContractTest {
     fun `calibrateBoard delegates to the board detector`() {
         val engine =
             CvEngineImpl(
-                boardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
-                dartDetector = FakeDartDetector(emptyList()),
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
+                classicalDartDetector = FakeDartDetector(emptyList()),
                 scoreMapper = ScoreMapper(),
             )
 
         assertEquals(BoardCalibrationResult.NotFound, engine.calibrateBoard(fakeFrame()))
+    }
+
+    @Test
+    fun `defaults to the classical backend`() {
+        val engine =
+            CvEngineImpl(
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
+                classicalDartDetector = FakeDartDetector(emptyList()),
+                scoreMapper = ScoreMapper(),
+            )
+
+        assertEquals(DetectionBackend.CLASSICAL, engine.detectionBackend)
+    }
+
+    @Test
+    fun `switching to DNN takes effect on the next call without recreating the engine`() {
+        val engine =
+            CvEngineImpl(
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.NotFound),
+                classicalDartDetector = FakeDartDetector(emptyList()),
+                scoreMapper = ScoreMapper(),
+                dnnBoardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.8f)),
+                dnnDartDetector = FakeDartDetector(emptyList()),
+            )
+
+        assertEquals(BoardCalibrationResult.NotFound, engine.calibrateBoard(fakeFrame()))
+
+        engine.detectionBackend = DetectionBackend.DNN
+
+        assertEquals(
+            BoardCalibrationResult.Calibrated(calibration, confidence = 0.8f),
+            engine.calibrateBoard(fakeFrame()),
+        )
+    }
+
+    @Test
+    fun `DNN backend falls back to classical when no DNN detectors were supplied`() {
+        val engine =
+            CvEngineImpl(
+                classicalBoardDetector = FakeBoardDetector(BoardCalibrationResult.Calibrated(calibration, confidence = 0.7f)),
+                classicalDartDetector = FakeDartDetector(emptyList()),
+                scoreMapper = ScoreMapper(),
+                dnnBoardDetector = null,
+                dnnDartDetector = null,
+                detectionBackend = DetectionBackend.DNN,
+            )
+
+        assertEquals(
+            BoardCalibrationResult.Calibrated(calibration, confidence = 0.7f),
+            engine.calibrateBoard(fakeFrame()),
+        )
     }
 }

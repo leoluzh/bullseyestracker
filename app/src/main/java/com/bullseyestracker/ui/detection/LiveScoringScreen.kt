@@ -123,6 +123,14 @@ fun LiveScoringScreen(
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(top = 4.dp),
                 )
+                // Small, unobtrusive indicator of which detection backend produced these
+                // results (spec 014-dnn-dart-detection quickstart.md step 5 manual check).
+                Text(
+                    "Detection: ${cvEngine.detectionBackend.name.lowercase().replaceFirstChar { it.uppercase() }}",
+                    color = Color.White.copy(alpha = 0.6f),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
                 Button(
                     onClick = {
                         onTurnConfirmed(currentThrows)

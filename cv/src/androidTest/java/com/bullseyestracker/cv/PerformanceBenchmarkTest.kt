@@ -8,6 +8,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bullseyestracker.cv.opencv.OpenCvBoardDetector
 import com.bullseyestracker.cv.opencv.OpenCvDartDetector
+import com.bullseyestracker.cv.opencv.dnn.OpenCvDnnBoardDetector
+import com.bullseyestracker.cv.opencv.dnn.OpenCvDnnDartDetector
+import com.bullseyestracker.cv.opencv.dnn.YoloV8Model
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -21,6 +24,11 @@ import org.opencv.android.OpenCVLoader
  * or equivalent) — run this on a matching physical device or emulator profile, not a flagship,
  * or the result understates real-world latency. Requires the same fixtures as
  * OpenCvDartDetectorTest (tasks.md T044 gap).
+ *
+ * Extended by spec 014-dnn-dart-detection FR-008/SC-003 with a DNN-backend equivalent — if that
+ * test fails the budget, the DNN backend must be restricted to single-photo capture only (FR-008)
+ * rather than shipped for live-camera mode; see `CvEngineImpl`'s capture-mode gating for that
+ * case.
  */
 @RunWith(AndroidJUnit4::class)
 class PerformanceBenchmarkTest {
@@ -29,6 +37,9 @@ class PerformanceBenchmarkTest {
 
     private lateinit var dartDetector: OpenCvDartDetector
     private lateinit var calibration: BoardCalibration
+
+    private lateinit var dnnDartDetector: OpenCvDnnDartDetector
+    private lateinit var dnnCalibration: BoardCalibration
 
     @Before
     fun setUp() {
@@ -40,6 +51,21 @@ class PerformanceBenchmarkTest {
         check(calibrated is BoardCalibrationResult.Calibrated) { "empty_board.png must contain a detectable board" }
         calibration = calibrated.calibration
         dartDetector.detect(FrameInput(loadFixture("empty_board.png")), calibration) // establishes baseline
+
+        val modelBytes =
+            InstrumentationRegistry
+                .getInstrumentation()
+                .targetContext.assets
+                .open("models/deepdarts-yolov8.onnx")
+                .use { it.readBytes() }
+        val model = YoloV8Model(modelBytes)
+        val dnnBoardDetector = OpenCvDnnBoardDetector(model)
+        dnnDartDetector = OpenCvDnnDartDetector(model)
+
+        val dnnCalibrated = dnnBoardDetector.calibrate(FrameInput(loadFixture("empty_board.png")))
+        check(dnnCalibrated is BoardCalibrationResult.Calibrated) { "empty_board.png must contain a DNN-detectable board" }
+        dnnCalibration = dnnCalibrated.calibration
+        dnnDartDetector.detect(FrameInput(loadFixture("empty_board.png")), dnnCalibration) // establishes baseline
     }
 
     @Test
@@ -57,6 +83,26 @@ class PerformanceBenchmarkTest {
         dartDetector.detect(frame, calibration)
         val elapsedMillis = (System.nanoTime() - start) / 1_000_000
         assertTrue("frame-to-result must stay under 200ms, was ${elapsedMillis}ms", elapsedMillis < 200)
+    }
+
+    @Test
+    fun dnnDetectThrowsStaysUnderPerformanceBudget() {
+        val frame = FrameInput(loadFixture("three_darts.png"))
+
+        benchmarkRule.measureRepeated {
+            dnnDartDetector.detect(frame, dnnCalibration)
+        }
+
+        val start = System.nanoTime()
+        dnnDartDetector.detect(frame, dnnCalibration)
+        val elapsedMillis = (System.nanoTime() - start) / 1_000_000
+        assertTrue(
+            "DNN frame-to-result must stay under 200ms for live-camera mode (spec " +
+                "014-dnn-dart-detection FR-008/SC-003), was ${elapsedMillis}ms -- if this " +
+                "regresses, restrict DetectionBackend.DNN to single-photo capture only rather " +
+                "than shipping it for live camera",
+            elapsedMillis < 200,
+        )
     }
 
     private fun loadFixture(name: String): Bitmap {

@@ -69,3 +69,13 @@ make lint / format    # ktlint check / autofix
   benchmark (no more missing-asset failures), but `DetectionAccuracyBenchmarkTest` passing
   against them says nothing about real-world detection accuracy — see the README in that
   directory. Real photos still need someone with physical board access.
+- A second, DNN-based detection backend exists (`specs/014-dnn-dart-detection/`,
+  `cv/opencv/dnn/`) alongside the original classical one, selectable at runtime via
+  `CvEngine.detectionBackend` (Settings screen; defaults to classical). The bundled model
+  (`cv/src/main/assets/models/deepdarts-yolov8.onnx`, NOTICE.md) is a YOLOv8n trained on the
+  public DeepDarts dataset — real-world accuracy has **not** been validated against real
+  dartboard photos, same gap as above, since none exist in this repo yet. Its instrumented
+  tests (`OpenCvDnnBoardDetectorTest`, `OpenCvDnnDartDetectorTest`, and the DNN cases added to
+  `DetectionAccuracyBenchmarkTest`/`PerformanceBenchmarkTest`) were written and compile-checked
+  but have not been run against a device/emulator in this environment — no Android device or
+  emulator was available (only unit tests under `cv/src/test/` were actually executed).

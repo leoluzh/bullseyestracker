@@ -8,6 +8,14 @@ import android.graphics.Bitmap
  * specs/001-dart-scoring-match/contracts/cv-engine-contract.md.
  */
 interface CvEngine {
+    /**
+     * Which detector implementation subsequent [calibrateBoard]/[detectThrows] calls use.
+     * Settable at any time — the effective backend for a call is whatever this is set to as of
+     * that call, so a user-facing switch (spec 014-dnn-dart-detection FR-003) takes effect on
+     * the very next capture without recreating the engine.
+     */
+    var detectionBackend: DetectionBackend
+
     fun calibrateBoard(frame: FrameInput): BoardCalibrationResult
 
     fun detectThrows(
@@ -15,6 +23,14 @@ interface CvEngine {
         calibration: BoardCalibration,
     ): List<DetectedThrow>
 }
+
+/**
+ * Selects which [BoardDetector]/[DartDetector] implementation [CvEngine] delegates to (spec
+ * 014-dnn-dart-detection). `DNN` silently falls back to `CLASSICAL` behavior if no DNN detector
+ * pair was supplied to the engine (e.g. the bundled model asset failed to load) — see
+ * [CvEngineImpl].
+ */
+enum class DetectionBackend { CLASSICAL, DNN }
 
 data class FrameInput(
     val bitmap: Bitmap,

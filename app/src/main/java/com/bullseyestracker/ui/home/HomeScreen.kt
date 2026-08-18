@@ -32,6 +32,7 @@ fun HomeScreen(
     onMatchHistory: () -> Unit,
     onPlayerStats: () -> Unit,
     onTestCalibrator: () -> Unit,
+    onSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -96,6 +97,13 @@ fun HomeScreen(
                 subtitle = "Check board detection and alignment",
                 accent = MaterialTheme.colorScheme.onSurfaceVariant,
                 onClick = onTestCalibrator,
+            )
+            Spacer(Modifier.height(12.dp))
+            MenuCard(
+                title = "Settings",
+                subtitle = "Choose the detection backend",
+                accent = MaterialTheme.colorScheme.onSurfaceVariant,
+                onClick = onSettings,
             )
             Spacer(Modifier.height(24.dp))
         }
