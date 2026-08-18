@@ -14,7 +14,9 @@ switching (User Story 2), and overlay/correction parity (User Story 3).
 ## 0. Produce the model asset (one-time, outside the app build)
 
 Not part of `make build` — done once (and re-done only if retraining) to produce the bundled
-`.onnx` checked into the repo:
+`.onnx` checked into the repo. `scripts/train_deepdarts_yolov8.ipynb` runs every step below
+end-to-end (including validation-metric checks and an OpenCV-`dnn` load verification) — use it
+directly rather than re-deriving these commands:
 
 1. Download the DeepDarts YOLOv8 dataset (Roboflow Universe, `testing-zzmc9/deepdarts-yolov8`,
    CC BY 4.0, 1,902 images / 5 classes).
