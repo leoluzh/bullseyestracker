@@ -9,6 +9,13 @@ Starting with the next release, entries below this line are generated automatica
 [release-please](https://github.com/googleapis/release-please) from conventional-commit PR
 titles on every merge to `master` — do not hand-edit past this point.
 
+## [0.3.0](https://github.com/leoluzh/bullseyestracker/compare/bullseyestracker-v0.2.0...bullseyestracker-v0.3.0) (2026-08-18)
+
+
+### Features
+
+* add DNN-based dart/board detection backend (OpenCV dnn + YOLOv8) ([#62](https://github.com/leoluzh/bullseyestracker/issues/62)) ([c855c79](https://github.com/leoluzh/bullseyestracker/commit/c855c792a424f5a558fb31865d143b866225a6a4))
+
 ## [0.2.0](https://github.com/leoluzh/bullseyestracker/compare/bullseyestracker-v0.1.1...bullseyestracker-v0.2.0) (2026-08-17)
 
 
