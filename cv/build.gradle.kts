@@ -30,7 +30,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // Used only to satisfy FrameInput's Bitmap field in plain-JVM tests that never call
     // methods on it (CvEngineImpl and ScoreMapper never touch Bitmap contents/dimensions).
-    testImplementation("org.mockito:mockito-core:5.23.0")
+    testImplementation("org.mockito:mockito-core:5.24.0")
     // android.jar's org.json classes are compile-only stubs that throw at runtime outside a
     // real device/emulator (spec 006-fixture-benchmark). FixtureGroundTruth (main) uses
     // org.json for real on-device (androidTest gets it free from the platform, per
